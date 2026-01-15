@@ -185,3 +185,4 @@
     background: #ffffff !important;
   }
 }
+.clip-path-slant { clip-path: polygon(20px 0, 100% 0, 100% 100%, 0% 100%); }

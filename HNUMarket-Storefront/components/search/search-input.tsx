@@ -7,17 +7,18 @@ import { Button } from "@/components/ui/button";
 import { storefrontProductsApi } from "@/lib/api/storefront-products";
 import { transformProducts } from "@/lib/helpers/transform-api-data";
 import { Product } from "@/types";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, cn } from "@/lib/utils";
 
 interface SearchInputProps {
   defaultValue?: string;
   onMobileClose?: () => void;
+  customClass?: string;
 }
 
 /**
  * Search input component that redirects to search page
  */
-export function SearchInput({ defaultValue = "", onMobileClose }: SearchInputProps) {
+export function SearchInput({ defaultValue = "", onMobileClose, customClass }: SearchInputProps) {
   const router = useRouter();
   const [query, setQuery] = useState(defaultValue);
 
@@ -94,8 +95,8 @@ export function SearchInput({ defaultValue = "", onMobileClose }: SearchInputPro
   };
 
   return (
-    <div className="relative w-full search-container">
-      <form onSubmit={handleSubmit} className="relative w-full">
+    <div className={cn("relative w-full search-container", customClass)}>
+      <form onSubmit={handleSubmit} className="relative w-full flex">
         <input
           ref={inputRef}
           type="search"
@@ -105,21 +106,20 @@ export function SearchInput({ defaultValue = "", onMobileClose }: SearchInputPro
           onFocus={() => {
             if (query.trim()) setShowDropdown(true);
           }}
-          className="w-full pl-5 pr-14 py-3 border border-gray-200 rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-black/5 shadow-sm text-sm sm:text-base transition-all [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
+          className="w-full pl-4 pr-12 py-2.5 border border-gray-200 border-r-0 rounded-l-md bg-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-sm transition-all [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
         />
         <Button
           type="submit"
-          size="icon"
-          className="absolute right-1.5 top-1/2 -translate-y-1/2 h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-primary hover:bg-primary/90 md:hover:scale-110 text-white"
+          className="h-auto rounded-l-none rounded-r-md bg-primary hover:bg-primary/90 text-white px-4 py-2.5"
         >
-          <Search className="h-4 w-4 sm:h-5 sm:w-5" />
+          <Search className="h-5 w-5" />
           <span className="sr-only">Tìm kiếm</span>
         </Button>
       </form>
 
       {/* Quick Search Results Dropdown */}
       {showDropdown && query.trim() && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-40">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-md shadow-lg border border-gray-100 overflow-hidden z-50">
           {isLoading ? (
             <div className="p-4 text-center">
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black mx-auto"></div>
@@ -128,7 +128,7 @@ export function SearchInput({ defaultValue = "", onMobileClose }: SearchInputPro
           ) : results.length > 0 ? (
             <>
               {/* Header */}
-              <div className="px-4 py-3 border-b border-gray-100">
+              <div className="px-4 py-2 border-b border-gray-100 bg-gray-50">
                 <div className="flex items-center justify-between">
                   <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
                     Sản phẩm gợi ý
@@ -140,16 +140,16 @@ export function SearchInput({ defaultValue = "", onMobileClose }: SearchInputPro
               </div>
 
               {/* Results List */}
-              <div className="divide-y divide-gray-100">
+              <div className="divide-y divide-gray-100 max-h-[60vh] overflow-y-auto">
                 {results.map((product, index) => (
                   <div
                     key={product.id}
                     onClick={() => handleProductClick(product.slug)}
                     className="px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors group"
                   >
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-center gap-3">
                       {/* Product Image */}
-                      <div className="w-14 h-14 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 ring-1 ring-gray-200/50 group-hover:ring-primary/20 transition-all">
+                      <div className="w-10 h-10 bg-gray-100 rounded overflow-hidden flex-shrink-0 border border-gray-200">
                         <img
                           src={product.images[0] || "/placeholder.jpg"}
                           alt={product.name}
@@ -159,24 +159,19 @@ export function SearchInput({ defaultValue = "", onMobileClose }: SearchInputPro
 
                       {/* Product Info */}
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 line-clamp-2 mb-1 group-hover:text-primary transition-colors">
+                        <p className="text-sm font-medium text-gray-900 truncate group-hover:text-primary transition-colors">
                           {product.name}
                         </p>
 
                         {/* Price Section */}
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <p className="text-base font-semibold text-black">
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-bold text-primary">
                             {formatCurrency(product.price)}
                           </p>
                           {product.originalPrice && product.originalPrice > product.price && (
-                            <>
-                              <p className="text-xs text-gray-400 line-through">
-                                {formatCurrency(product.originalPrice)}
-                              </p>
-                              <span className="px-1.5 py-0.5 bg-red-50 text-black text-xs font-medium rounded">
-                                -{Math.round((1 - product.price / product.originalPrice) * 100)}%
-                              </span>
-                            </>
+                            <p className="text-xs text-gray-400 line-through">
+                              {formatCurrency(product.originalPrice)}
+                            </p>
                           )}
                         </div>
                       </div>
@@ -187,14 +182,14 @@ export function SearchInput({ defaultValue = "", onMobileClose }: SearchInputPro
 
               {/* View All Button */}
               {totalResults > 5 && (
-                <div className="p-3 border-t border-gray-100 bg-gray-50/50">
+                <div className="p-2 border-t border-gray-100 bg-gray-50">
                   <button
                     onClick={() => {
                       router.push(`/search?q=${encodeURIComponent(query.trim())}`);
                       onMobileClose?.();
                       setShowDropdown(false);
                     }}
-                    className="w-full py-2.5 text-sm text-center text-primary font-semibold hover:bg-white rounded-lg transition-all border border-transparent hover:border-primary/20"
+                    className="w-full py-2 text-sm text-center text-primary font-semibold hover:underline"
                   >
                     Xem tất cả {totalResults} sản phẩm →
                   </button>
@@ -202,8 +197,8 @@ export function SearchInput({ defaultValue = "", onMobileClose }: SearchInputPro
               )}
             </>
           ) : (
-            <div className="p-8 text-center text-gray-500">
-              <Search className="h-8 w-8 mx-auto mb-2 text-gray-300" />
+            <div className="p-6 text-center text-gray-500">
+              <Search className="h-6 w-6 mx-auto mb-2 text-gray-300" />
               <p className="text-sm">Không tìm thấy sản phẩm nào</p>
             </div>
           )}

@@ -2,92 +2,136 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "next/image"; // Keep Image import
+import { Search, Heart, User, ShoppingCart, Phone, Menu, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MobileMenu } from "@/components/layout/mobile-menu";
 import { SearchInput } from "@/components/search/search-input";
 import { useAuth } from "@/contexts/auth-context";
 import { UserMenu } from "@/components/auth/user-menu";
 import { QuickCart } from "@/components/cart/quick-cart";
+import { cn } from "@/lib/utils";
 
 export function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
-  const [isVisible, setIsVisible] = useState(true);
-  const lastScrollY = useRef(0);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-
-      // Luôn hiện khi gần top trang
-      if (currentScrollY < 10) {
-        setIsVisible(true);
-      } else {
-        // Scroll xuống -> ẩn, scroll lên -> hiện
-        if (currentScrollY > lastScrollY.current) {
-          setIsVisible(false);
-        } else if (currentScrollY < lastScrollY.current) {
-          setIsVisible(true);
-        }
-      }
-
-      lastScrollY.current = currentScrollY;
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   return (
-    <header
-      className={`sticky top-0 z-40 bg-white border-b border-gray-200 transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"
-        }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-4">
-          {/* Mobile Menu - shown on mobile only */}
-          <div className="md:hidden">
-            <MobileMenu />
+    <header className="w-full z-40">
+      {/* 1. Top Green Promotion Bar */}
+      <div className={`hidden md:block bg-primary text-white text-xs py-2 px-4`}>
+        <div className="max-w-screen mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 text-center sm:text-left">
+          <p className="font-medium truncate">
+            Giao hàng MIỄN PHÍ & giảm 40% cho 3 đơn hàng tiếp theo! Đặt đơn hàng đầu tiên của bạn ngay bây giờ.
+          </p>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <span className="opacity-80">Bạn cần trợ giúp? Hãy gọi cho chúng tôi:</span>
+            <span className="font-bold">+258 3268 21485</span>
           </div>
+        </div>
+      </div>
 
+      {/* 2. Secondary Top Bar (Utility Links) */}
+      <div className={`bg-white border-b border-gray-200 py-2 px-4 text-xs text-gray-500 hidden md:block`}>
+        <div className="max-w-screen mx-auto flex justify-between items-center">
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4">
+              <Link href="/about" className="hover:text-primary transition-colors">Về chúng tôi</Link>
+              <Link href="/account" className="hover:text-primary transition-colors">Tài khoản</Link>
+              <Link href="/wishlist" className="hover:text-primary transition-colors">Yêu thích</Link>
+            </div>
+            <span className="w-px h-3 bg-gray-300"></span>
+            <p>Chúng tôi giao hàng đến bạn mỗi ngày từ 7:00 đến 22:00</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <Link href="/order-check" className="hover:text-primary transition-colors">Kiểm tra đơn hàng</Link>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Main Header (Logo, Search, Actions) */}
+      <div className="bg-white py-6 px-4">
+        <div className="max-w-screen mx-auto flex items-center justify-between gap-4 sm:gap-8">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 text-xl sm:text-2xl font-bold text-primary">
-            <Image
-              src="/images/sonmartlogo1.png"
-              alt="SonMart Logo"
-              width={40}
-              height={40}
-              className="h-10 w-10 sm:h-12 sm:w-12 object-contain"
-            />
-            HNUMarket
+          <Link href="/" className="flex-shrink-0 flex items-center gap-2">
+            <h1 className="text-3xl font-black text-black tracking-tight">
+              HNUMARKET
+            </h1>
           </Link>
 
-          {/* Search - hidden on mobile, shown on sm+ */}
-          <div className="hidden md:flex flex-1 max-w-2xl mx-4">
-            <SearchInput />
+          {/* Search Input - Desktop */}
+          <div className="hidden md:block flex-1 max-w-2xl">
+            <SearchInput customClass="w-full" />
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-2 sm:gap-4">
-            <UserMenu user={user} onLogout={logout} />
-            <QuickCart />
+          <div className="flex items-center gap-3">
+            {/* Wishlist */}
+            <Link href="/wishlist">
+              <Button variant="outline" className={`hidden sm:flex h-12 gap-2 border-gray-200 rounded-lg hover:border-primary hover:text-primary group`}>
+                <div className="relative">
+                  <Heart className="w-5 h-5" />
+                  <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">0</span>
+                </div>
+                <span className="hidden lg:inline text-sm font-semibold text-gray-700 group-hover:text-primary">Yêu thích</span>
+              </Button>
+            </Link>
+
+            {/* User Menu */}
+            <div className="h-12">
+              <UserMenu user={user} onLogout={logout} customTrigger={true} />
+            </div>
+
+            {/* Cart */}
+            <div className="h-12">
+              <QuickCart customTrigger={true} />
+            </div>
+
+            {/* Mobile Menu Trigger */}
+            <div className="md:hidden ml-2">
+              <MobileMenu />
+            </div>
           </div>
         </div>
 
-        {/* Mobile Search - shown on mobile only */}
-        <div className="md:hidden pb-3">
+        {/* Mobile Search */}
+        <div className="md:hidden mt-4">
           <SearchInput />
         </div>
+      </div>
 
-        {/* Desktop navigation */}
-        {/* <nav className="hidden md:flex gap-6 py-3 text-sm overflow-x-auto">
-          <Link href="/" className="whitespace-nowrap hover:text-primary transition-colors">Trang chủ</Link>
-          <Link href="/categories/dien-thoai-phu-kien" className="whitespace-nowrap hover:text-primary transition-colors">Điện thoại</Link>
-          <Link href="/categories/laptop-may-tinh" className="whitespace-nowrap hover:text-primary transition-colors">Laptop</Link>
-          <Link href="/categories/thoi-trang-nam" className="whitespace-nowrap hover:text-primary transition-colors">Thời trang Nam</Link>
-          <Link href="/categories/thoi-trang-nu" className="whitespace-nowrap hover:text-primary transition-colors">Thời trang Nữ</Link>
-          <Link href="/flash-sale" className="whitespace-nowrap text-primary font-bold hover:text-primary-600 transition-colors">Flash Sale</Link>
-        </nav> */}
+      {/* 4. Navigation Menu Bar */}
+      <div className="bg-gray-100 border-t border-b border-gray-200 hidden md:block">
+        <div className="max-w-screen mx-auto px-4">
+          <div className="flex items-center justify-between h-14">
+            {/* Main Nav Links */}
+            <nav className="flex items-center gap-8 text-sm font-bold text-gray-800 uppercase tracking-wide">
+              <Link href="/" className="hover:text-primary transition-colors">Trang chủ</Link>
+              <Link href="/about" className="hover:text-primary transition-colors">Về chúng tôi</Link>
+
+              <div className="group relative cursor-pointer flex items-center gap-1 hover:text-primary transition-colors">
+                Sản phẩm <ChevronDown className="w-4 h-4" />
+                {/* Dropdown placeholder */}
+              </div>
+
+              <div className="group relative cursor-pointer flex items-center gap-1 hover:text-primary transition-colors">
+                Tin tức <ChevronDown className="w-4 h-4" />
+              </div>
+
+              <Link href="/about" className="hover:text-primary transition-colors">Giới thiệu</Link>
+              <Link href="/contact" className="hover:text-primary transition-colors">Liên hệ</Link>
+            </nav>
+
+            {/* Right Side Callouts */}
+            <div className="flex items-center">
+              <span className="text-sm font-semibold mr-4 text-gray-700">Sản phẩm bán chạy</span>
+              <div className={`bg-primary text-white px-8 py-4 h-14 flex items-center gap-2 font-bold text-sm relative -mr-4 clip-path-slant`}>
+                <span className="uppercase">Giảm ngay 30%</span>
+                <span className="bg-white text-primary text-[10px] px-2 py-0.5 rounded uppercase font-extrabold">Sale</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </header>
   );

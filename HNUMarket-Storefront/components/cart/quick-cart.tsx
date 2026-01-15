@@ -34,7 +34,7 @@ function formatVariantDisplay(variant: CartItemWithDetails["variant"]): string {
 /**
  * Quick cart preview component - shows cart items in a popover
  */
-export function QuickCart() {
+export function QuickCart({ customTrigger }: { customTrigger?: boolean }) {
     const {
         items,
         itemCount,
@@ -103,15 +103,29 @@ export function QuickCart() {
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
-                <Button variant="outline" className="hidden sm:flex relative gap-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground">
-                    <ShoppingCart className="h-5 w-5 sm:h-6 sm:w-6" />
-                    <span className="hidden sm:inline">Giỏ hàng</span>
-                    {itemCount > 0 && (
-                        <span className="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-medium">
-                            {itemCount > 99 ? "99+" : itemCount}
-                        </span>
-                    )}
-                </Button>
+                {customTrigger ? (
+                    <Button variant="outline" className={`hidden sm:flex h-12 gap-2 border-gray-200 rounded-lg hover:border-primary hover:text-primary group`}>
+                        <div className="relative">
+                            <ShoppingCart className="w-5 h-5" />
+                            {itemCount > 0 && (
+                                <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                                    {itemCount > 99 ? "99+" : itemCount}
+                                </span>
+                            )}
+                        </div>
+                        <span className="hidden lg:inline text-sm font-semibold text-gray-700 group-hover:text-primary">Giỏ hàng</span>
+                    </Button>
+                ) : (
+                    <Button variant="outline" className="hidden sm:flex relative gap-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+                        <ShoppingCart className="h-5 w-5 sm:h-6 sm:w-6" />
+                        <span className="hidden sm:inline">Giỏ hàng</span>
+                        {itemCount > 0 && (
+                            <span className="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-medium">
+                                {itemCount > 99 ? "99+" : itemCount}
+                            </span>
+                        )}
+                    </Button>
+                )}
             </PopoverTrigger>
             <PopoverContent
                 className="w-[90vw] sm:w-96 p-0 rounded-xl"
