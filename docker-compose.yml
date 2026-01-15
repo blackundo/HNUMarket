@@ -1,0 +1,78 @@
+services:
+  # Backend API Service
+  backend:
+    build:
+      context: ./HNUMarket-Backend
+      dockerfile: Dockerfile
+    container_name: hnumarket-backend
+    restart: unless-stopped
+    environment:
+      # Supabase Configuration
+      SUPABASE_URL: ${SUPABASE_URL}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
+      SUPABASE_SERVICE_KEY: ${SUPABASE_SERVICE_KEY}
+      SUPABASE_JWT_SECRET: ${SUPABASE_JWT_SECRET}
+
+      # Server Configuration
+      PORT: 3001
+      NODE_ENV: production
+
+      # CORS Configuration
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+    networks:
+      - internal    # App internal network
+      - proxy       # NPM proxy network
+    expose:
+      - "3001"
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3001/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      # Nginx Proxy Manager labels (adjust as needed)
+      - "com.centurylinklabs.watchtower.enable=true"
+
+  # Frontend Storefront Service
+  frontend:
+    build:
+      context: ./HNUMarket-Storefront
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://api.hnumarket.com/api}
+        NEXT_PUBLIC_GOOGLE_GENAI_API_KEY: ${NEXT_PUBLIC_GOOGLE_GENAI_API_KEY}
+        NEXT_PUBLIC_GA_ID: ${NEXT_PUBLIC_GA_ID}
+    container_name: hnumarket-frontend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: 1
+      API_URL: ${API_URL}
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - internal    # App internal network
+      - proxy       # NPM proxy network
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://127.0.0.1:3000/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      # Nginx Proxy Manager labels (adjust as needed)
+      - "com.centurylinklabs.watchtower.enable=true"
+
+networks:
+  internal:
+    name: hnumarket-internal
+    driver: bridge
+  proxy:
+    external: true
+    name: nginx-proxy-manager_default
