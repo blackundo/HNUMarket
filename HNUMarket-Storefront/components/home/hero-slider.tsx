@@ -1,7 +1,7 @@
 'use client';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Pagination, Navigation } from 'swiper/modules';
+import { Autoplay, Navigation, EffectFade } from 'swiper/modules';
 import type { Swiper as SwiperType } from 'swiper';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRef, useState, useEffect } from 'react';
@@ -11,8 +11,8 @@ import { storefrontHeroSlidesApi, type HeroSlide } from '@/lib/api/hero-slides';
 
 // Import Swiper styles
 import 'swiper/css';
-import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import 'swiper/css/effect-fade';
 
 export function HeroSlider() {
     const prevRef = useRef<HTMLButtonElement>(null);
@@ -45,34 +45,23 @@ export function HeroSlider() {
 
     return (
         <section className="relative py-4 sm:py-6">
-            <div className="max-w-screen mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-screen mx-auto px-4">
                 <Swiper
-                    modules={[Autoplay, Pagination, Navigation]}
-                    spaceBetween={12}
+                    modules={[Autoplay, Navigation, EffectFade]}
+                    effect="fade"
+                    spaceBetween={0}
                     slidesPerView={1}
                     centeredSlides={false}
                     breakpoints={{
                         0: {
                             slidesPerView: 1,
-                            spaceBetween: 12,
-                        },
-                        640: {
-                            slidesPerView: 2,
-                            spaceBetween: 12,
-                        },
-                        1024: {
-                            slidesPerView: 3,
-                            spaceBetween: 16,
+                            spaceBetween: 0,
                         },
                     }}
-                    loop={heroSlides.length > 3}
+                    loop={heroSlides.length > 1}
                     autoplay={{
                         delay: 4000,
                         disableOnInteraction: false,
-                    }}
-                    pagination={{
-                        clickable: true,
-                        dynamicBullets: false,
                     }}
                     navigation={{
                         prevEl: prevRef.current,
@@ -93,7 +82,7 @@ export function HeroSlider() {
                         const isClickable = slide.link && slide.link !== '#';
                         const SlideContent = (
                             <div className={`
-                  relative aspect-[16/9] rounded-xl overflow-hidden shadow-md
+                  relative aspect-[16/9] md:aspect-[21/9] rounded-xl overflow-hidden shadow-md
                   ${isClickable ? 'hover:shadow-lg transition-all duration-300 hover:scale-[1.02] cursor-pointer' : 'cursor-default'}
                   bg-gradient-to-br ${slide.gradient || 'from-gray-400 to-gray-500'}
                 `}>
@@ -103,7 +92,7 @@ export function HeroSlider() {
                                         alt={slide.title}
                                         fill
                                         className="object-cover"
-                                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                                        sizes="100vw"
                                         priority={index === 0}
                                     />
                                 ) : (
@@ -149,7 +138,7 @@ export function HeroSlider() {
             <button
                 ref={prevRef}
                 onClick={() => swiper?.slidePrev()}
-                className="absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 z-20 bg-white/95 hover:bg-white shadow-md rounded-full p-1.5 sm:p-2 transition-all duration-200 hover:scale-110 active:scale-95 min-h-[32px] min-w-[32px] sm:min-h-[36px] sm:min-w-[36px] flex items-center justify-center"
+                className="absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 z-20 bg-white/95 hover:bg-white shadow-md rounded-full p-1.5 sm:p-2 transition-all duration-200 hover:scale-110 active:scale-95 min-h-[32px] min-w-[32px] sm:min-h-[36px] sm:min-w-[36px] hidden sm:flex items-center justify-center"
                 aria-label="Previous slide"
             >
                 <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" strokeWidth={2.5} />
@@ -157,47 +146,12 @@ export function HeroSlider() {
             <button
                 ref={nextRef}
                 onClick={() => swiper?.slideNext()}
-                className="absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 z-20 bg-white/95 hover:bg-white shadow-md rounded-full p-1.5 sm:p-2 transition-all duration-200 hover:scale-110 active:scale-95 min-h-[32px] min-w-[32px] sm:min-h-[36px] sm:min-w-[36px] flex items-center justify-center"
+                className="absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 z-20 bg-white/95 hover:bg-white shadow-md rounded-full p-1.5 sm:p-2 transition-all duration-200 hover:scale-110 active:scale-95 min-h-[32px] min-w-[32px] sm:min-h-[36px] sm:min-w-[36px] hidden sm:flex items-center justify-center"
                 aria-label="Next slide"
             >
                 <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" strokeWidth={2.5} />
             </button>
 
-            <style jsx global>{`
-                .hero-swiper {
-                    width: 100%;
-                    padding-bottom: 2rem;
-                }
-                
-                .hero-swiper .swiper-pagination {
-                    bottom: 0 !important;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    gap: 8px;
-                }
-                
-                .hero-swiper .swiper-pagination-bullet {
-                    width: 10px !important;
-                    height: 10px !important;
-                    background: #d1d5db !important;
-                    opacity: 1 !important;
-                    border-radius: 50% !important;
-                    transition: all 0.3s ease !important;
-                    cursor: pointer;
-                }
-                
-                .hero-swiper .swiper-pagination-bullet:hover {
-                    background: #9ca3af !important;
-                    transform: scale(1.2);
-                }
-                
-                .hero-swiper .swiper-pagination-bullet-active {
-                    background: #22c55e !important;
-                    width: 24px !important;
-                    border-radius: 5px !important;
-                }
-            `}</style>
         </section>
     );
 }
