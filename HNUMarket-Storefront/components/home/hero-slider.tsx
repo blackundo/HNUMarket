@@ -44,7 +44,7 @@ export function HeroSlider() {
     }
 
     return (
-        <section className="relative py-4 sm:py-6">
+        <section className="relative py-4 sm:py-6 bg-gray-200">
             <div className="max-w-screen mx-auto px-4">
                 <Swiper
                     modules={[Autoplay, Navigation, EffectFade]}
@@ -83,7 +83,7 @@ export function HeroSlider() {
                         const SlideContent = (
                             <div className={`
                   relative aspect-[16/9] md:aspect-[21/9] rounded-xl overflow-hidden shadow-md
-                  ${isClickable ? 'hover:shadow-lg transition-all duration-300 hover:scale-[1.02] cursor-pointer' : 'cursor-default'}
+                  ${isClickable ? 'hover:shadow-lg transition-all duration-300 cursor-pointer' : 'cursor-default'}
                   bg-gradient-to-br ${slide.gradient || 'from-gray-400 to-gray-500'}
                 `}>
                                 {slide.image_url ? (
@@ -138,7 +138,7 @@ export function HeroSlider() {
             <button
                 ref={prevRef}
                 onClick={() => swiper?.slidePrev()}
-                className="absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 z-20 bg-white/95 hover:bg-white shadow-md rounded-full p-1.5 sm:p-2 transition-all duration-200 hover:scale-110 active:scale-95 min-h-[32px] min-w-[32px] sm:min-h-[36px] sm:min-w-[36px] hidden sm:flex items-center justify-center"
+                className="absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 z-20 bg-white/95 hover:bg-white shadow-md rounded-full p-4 transition-all duration-200 hover:scale-110 active:scale-95 min-h-[32px] min-w-[32px] sm:min-h-[36px] sm:min-w-[36px] hidden sm:flex items-center justify-center"
                 aria-label="Previous slide"
             >
                 <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" strokeWidth={2.5} />
@@ -146,7 +146,7 @@ export function HeroSlider() {
             <button
                 ref={nextRef}
                 onClick={() => swiper?.slideNext()}
-                className="absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 z-20 bg-white/95 hover:bg-white shadow-md rounded-full p-1.5 sm:p-2 transition-all duration-200 hover:scale-110 active:scale-95 min-h-[32px] min-w-[32px] sm:min-h-[36px] sm:min-w-[36px] hidden sm:flex items-center justify-center"
+                className="absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 z-20 bg-white/95 hover:bg-white shadow-md rounded-full p-4 transition-all duration-200 hover:scale-110 active:scale-95 min-h-[32px] min-w-[32px] sm:min-h-[36px] sm:min-w-[36px] hidden sm:flex items-center justify-center"
                 aria-label="Next slide"
             >
                 <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" strokeWidth={2.5} />

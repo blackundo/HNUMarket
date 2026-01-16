@@ -1,19 +1,19 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import Image from "next/image"; // Keep Image import
-import { Search, Heart, User, ShoppingCart, Phone, Menu, ChevronDown } from "lucide-react";
+import { Heart, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MobileMenu } from "@/components/layout/mobile-menu";
 import { SearchInput } from "@/components/search/search-input";
 import { useAuth } from "@/contexts/auth-context";
 import { UserMenu } from "@/components/auth/user-menu";
 import { QuickCart } from "@/components/cart/quick-cart";
-import { cn } from "@/lib/utils";
+import { useMounted } from "@/hooks/use-mounted";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function Navbar() {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, logout } = useAuth();
+  const mounted = useMounted();
 
 
   return (
@@ -54,7 +54,7 @@ export function Navbar() {
         <div className="max-w-screen mx-auto flex items-center justify-between gap-4 sm:gap-8">
           {/* Logo */}
           <Link href="/" className="flex-shrink-0 flex items-center gap-2">
-            <h1 className="text-3xl font-black text-black tracking-tight">
+            <h1 className="text-3xl font-bold text-primary">
               HNUMARKET
             </h1>
           </Link>
@@ -68,7 +68,7 @@ export function Navbar() {
           <div className="flex items-center gap-3">
             {/* Wishlist */}
             <Link href="/wishlist">
-              <Button variant="outline" className={`hidden sm:flex h-12 gap-2 border-gray-200 rounded-lg hover:border-primary hover:text-primary group`}>
+              <Button variant="outline" className={`hidden sm:flex h-12 gap-2 border-gray-200 rounded-sm hover:border-primary hover:text-primary group`}>
                 <div className="relative">
                   <Heart className="w-5 h-5" />
                   <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">0</span>
@@ -79,17 +79,29 @@ export function Navbar() {
 
             {/* User Menu */}
             <div className="h-12">
-              <UserMenu user={user} onLogout={logout} customTrigger={true} />
+              {mounted ? (
+                <UserMenu user={user} onLogout={logout} customTrigger={true} />
+              ) : (
+                <Skeleton className="hidden sm:flex h-12 w-[120px] rounded-sm" />
+              )}
             </div>
 
             {/* Cart */}
             <div className="h-12">
-              <QuickCart customTrigger={true} />
+              {mounted ? (
+                <QuickCart customTrigger={true} />
+              ) : (
+                <Skeleton className="hidden sm:flex h-12 w-[120px] rounded-sm" />
+              )}
             </div>
 
             {/* Mobile Menu Trigger */}
             <div className="md:hidden ml-2">
-              <MobileMenu />
+              {mounted ? (
+                <MobileMenu />
+              ) : (
+                <Skeleton className="h-10 w-10 rounded-md" />
+              )}
             </div>
           </div>
         </div>
