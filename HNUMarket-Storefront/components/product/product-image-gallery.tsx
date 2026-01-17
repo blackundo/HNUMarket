@@ -28,7 +28,7 @@ export function ProductImageGallery({
     <div
       className={cn(
         "flex flex-col gap-4 items-start",
-        !isModal && "md:flex-row lg:sticky md:top-24"
+        !isModal && "md:flex-row md:top-24"
       )}
     >
       {/* Thumbnails - Hiển thị bên trái trên desktop, dưới trên mobile (hoặc dưới nếu là modal) */}
@@ -76,7 +76,7 @@ export function ProductImageGallery({
       <div
         className={cn(
           "w-full aspect-square bg-gray-100 rounded-lg overflow-hidden",
-          !isModal ? "md:max-w-[500px] order-1 md:order-2" : "order-1"
+          !isModal ? "md:max-w-[600px] order-1 md:order-2" : "order-1"
         )}
       >
         {displayImages[selectedImageIndex] === "/placeholder.jpg" ? (

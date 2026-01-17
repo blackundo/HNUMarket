@@ -1,6 +1,6 @@
 export function Footer() {
   return (
-    <footer className="relative mt-12 sm:mt-16 pb-10 md:pb-0 overflow-hidden border-t border-gray-200/60 shadow-[0_-1px_3px_rgba(0,0,0,0.05)]">
+    <footer className="relative pb-10 md:pb-0 overflow-hidden border-t border-gray-200/60 shadow-[0_-1px_3px_rgba(0,0,0,0.05)]">
       {/* Glassmorphism background */}
       <div className="absolute inset-0 bg-white/80 backdrop-blur-xl" />
 

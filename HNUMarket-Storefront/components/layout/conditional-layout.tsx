@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { Navbar } from './navbar';
 import { Footer } from './footer';
+import { PolicyBanner } from './policy-banner';
 import { Toaster } from 'sonner';
 
 export function ConditionalLayout({ children }: { children: React.ReactNode }) {
@@ -13,6 +14,7 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
     <>
       {!isAdminRoute && <Navbar />}
       <main className="min-h-screen">{children}</main>
+      {!isAdminRoute && <PolicyBanner />}
       {!isAdminRoute && <Footer />}
       {!isAdminRoute && (
         <Toaster position="top-right" richColors offset={{ top: 100 }} />

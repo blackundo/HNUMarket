@@ -13,6 +13,7 @@ import { ProductInfo } from "@/components/product/product-info";
 import { ProductInfoNormalized } from "@/components/product/product-info-normalized";
 import { ProductCard } from "@/components/product/product-card";
 import { ProductViewTracker } from "@/components/product/product-view-tracker";
+import { ProductVouchers } from "@/components/product/product-vouchers";
 import { Separator } from "@/components/ui/separator";
 
 interface ProductPageProps {
@@ -118,18 +119,25 @@ export default async function ProductPage({ params }: ProductPageProps) {
             categoryId: product.categoryId,
           }}
         />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-screen mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Product Detail Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-12 items-start">
-            {/* Left: Image Gallery */}
-            <ProductImageGallery
-              images={
-                useNormalizedVariants
-                  ? (product as any).images.map((img: any) => img.url)
-                  : product.images
-              }
-              productName={product.name}
-            />
+          <div className="grid grid-cols-1 lg:grid-cols-[6fr_auto_4fr] gap-8 lg:gap-8 mb-12">
+            {/* Left: Image Gallery & Vouchers (6fr) */}
+            <div className="flex flex-col gap-10">
+              <ProductImageGallery
+                images={
+                  useNormalizedVariants
+                    ? (product as any).images.map((img: any) => img.url)
+                    : product.images
+                }
+                productName={product.name}
+              />
+              <ProductVouchers />
+            </div>
+
+            {/* Separator */}
+            <Separator orientation="vertical" className="hidden lg:block h-full" />
+
 
             {/* Right: Product Info - Conditional rendering based on variant system */}
             {useNormalizedVariants ? (
