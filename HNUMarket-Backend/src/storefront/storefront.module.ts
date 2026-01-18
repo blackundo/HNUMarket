@@ -3,6 +3,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { StorefrontController } from './storefront.controller';
 import { StorefrontService } from './storefront.service';
 import { StorefrontNormalizedService } from './storefront-normalized.service';
+import { StorefrontPostsService } from './storefront-posts.service';
 import { HomepageSectionsModule } from '../homepage-sections/homepage-sections.module';
 
 /**
@@ -29,7 +30,8 @@ import { HomepageSectionsModule } from '../homepage-sections/homepage-sections.m
     StorefrontNormalizedService,
     // Keep old service for backward compatibility
     StorefrontService,
+    StorefrontPostsService,
   ],
-  exports: [StorefrontNormalizedService, StorefrontService],
+  exports: [StorefrontNormalizedService, StorefrontService, StorefrontPostsService],
 })
-export class StorefrontModule {}
+export class StorefrontModule { }

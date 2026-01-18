@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { StorefrontService } from './storefront.service';
 import { StorefrontNormalizedService } from './storefront-normalized.service';
+import { StorefrontPostsService, StorefrontPostsQueryDto } from './storefront-posts.service';
 import { StorefrontProductQueryDto } from './dto/storefront-product-query.dto';
 import { HomepageSectionsService } from '../homepage-sections/homepage-sections.service';
 
@@ -30,7 +31,8 @@ export class StorefrontController {
     // Keep old service for backward compatibility
     private legacyStorefrontService: StorefrontService,
     private homepageSectionsService: HomepageSectionsService,
-  ) {}
+    private storefrontPostsService: StorefrontPostsService,
+  ) { }
 
   /**
    * List all active products with pagination and filters
@@ -168,5 +170,45 @@ export class StorefrontController {
   getHomepageSections() {
     this.logger.debug('Fetching homepage sections');
     return this.homepageSectionsService.getActiveWithProducts();
+  }
+
+  // ==================== POSTS (BLOG) ====================
+
+  /**
+   * Get all published posts with pagination
+   * Public endpoint for blog listing
+   *
+   * @example GET /api/storefront/posts?page=1&limit=10
+   * @example GET /api/storefront/posts?category=recipes&search=kimchi
+   */
+  @Get('posts')
+  findAllPosts(@Query() query: StorefrontPostsQueryDto) {
+    this.logger.debug(`Fetching posts: ${JSON.stringify(query)}`);
+    return this.storefrontPostsService.findAll(query);
+  }
+
+  /**
+   * Get recent posts
+   * IMPORTANT: This route must come BEFORE /posts/:slug to avoid conflicts
+   *
+   * @example GET /api/storefront/posts/recent?limit=5
+   */
+  @Get('posts/recent')
+  getRecentPosts(@Query('limit') limit?: number) {
+    const postLimit = limit ? Number(limit) : 5;
+    this.logger.debug(`Fetching recent posts: limit=${postLimit}`);
+    return this.storefrontPostsService.getRecentPosts(postLimit);
+  }
+
+  /**
+   * Get single post by slug
+   * Increments view count automatically
+   *
+   * @example GET /api/storefront/posts/cach-lam-kimchi-tai-nha
+   */
+  @Get('posts/:slug')
+  findPostBySlug(@Param('slug') slug: string) {
+    this.logger.debug(`Fetching post by slug: ${slug}`);
+    return this.storefrontPostsService.findBySlug(slug);
   }
 }
