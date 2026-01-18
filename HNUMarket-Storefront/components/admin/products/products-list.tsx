@@ -237,7 +237,7 @@ export function ProductsList() {
             {/* Data Table */}
             <Card>
                 <CardHeader>
-                    <CardTitle className="font-heading">Tất cả sản phẩm</CardTitle>
+                    <CardTitle className="font-heading">Tất cả sản phẩm (Nhấn chuột phải để thao tác)</CardTitle>
                     <CardDescription className="font-body">
                         {isLoading ? 'Đang tải...' : `${total} sản phẩm`}
                     </CardDescription>

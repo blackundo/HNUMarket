@@ -101,10 +101,10 @@ export const productImageSchema = z.object({
 });
 
 /**
- * Create Product Schema
+ * Create Product Schema Base (without refinements)
  * Note: Uses camelCase to match backend API contract
  */
-export const createProductSchema = z.object({
+const createProductSchemaBase = z.object({
   name: z.string().min(1, 'Product name is required').max(255),
   description: z.string().optional(),
   price: z.number().min(0, 'Price must be non-negative'),
@@ -128,21 +128,43 @@ export const createProductSchema = z.object({
     })
     .optional()
     .or(z.literal('')),
-}).refine(
-  (data) => {
-    if (data.originalPrice === undefined || data.originalPrice === null) return true;
-    return data.originalPrice >= data.price;
-  },
-  {
-    message: 'Giá gốc phải lớn hơn hoặc bằng giá bán',
-    path: ['originalPrice'],
-  }
+});
+
+/**
+ * Price refinement for original price validation
+ */
+const priceRefinement = <T extends { price: number; originalPrice?: number | null }>(data: T) => {
+  if (data.originalPrice === undefined || data.originalPrice === null) return true;
+  return data.originalPrice >= data.price;
+};
+
+const priceRefinementMessage = {
+  message: 'Giá gốc phải lớn hơn hoặc bằng giá bán',
+  path: ['originalPrice'],
+};
+
+/**
+ * Create Product Schema (with refinements)
+ */
+export const createProductSchema = createProductSchemaBase.refine(
+  priceRefinement,
+  priceRefinementMessage
 );
 
 /**
  * Update Product Schema (all fields optional)
+ * Uses base schema to avoid .partial() on refined schema
  */
-export const updateProductSchema = createProductSchema.partial();
+export const updateProductSchema = createProductSchemaBase.partial().refine(
+  (data) => {
+    // Only validate if both price and originalPrice are provided
+    if (data.price === undefined || data.originalPrice === undefined || data.originalPrice === null) {
+      return true;
+    }
+    return data.originalPrice >= data.price;
+  },
+  priceRefinementMessage
+);
 
 /**
  * Product Query Schema
