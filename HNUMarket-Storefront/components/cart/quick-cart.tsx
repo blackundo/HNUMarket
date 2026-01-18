@@ -104,7 +104,7 @@ export function QuickCart({ customTrigger }: { customTrigger?: boolean }) {
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 {customTrigger ? (
-                    <Button variant="outline" className={`hidden sm:flex h-12 gap-2 border-gray-200 rounded-lg hover:border-primary hover:text-primary group`}>
+                    <Button variant="outline" className={`hidden sm:flex h-12 gap-2 border-gray-200 rounded-lg hover:border-accent-foreground hover:text-accent-foreground group`}>
                         <div className="relative">
                             <ShoppingCart className="w-5 h-5" />
                             {itemCount > 0 && (
@@ -113,10 +113,10 @@ export function QuickCart({ customTrigger }: { customTrigger?: boolean }) {
                                 </span>
                             )}
                         </div>
-                        <span className="hidden lg:inline text-sm font-semibold text-gray-700 group-hover:text-primary">Giỏ hàng</span>
+                        <span className="hidden lg:inline text-sm font-semibold text-gray-700 group-hover:text-accent-foreground">Giỏ hàng</span>
                     </Button>
                 ) : (
-                    <Button variant="outline" className="hidden sm:flex relative gap-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+                    <Button variant="outline" className="hidden sm:flex relative gap-2 border-primary text-primary hover:bg-primary hover:text-accent-foreground">
                         <ShoppingCart className="h-5 w-5 sm:h-6 sm:w-6" />
                         <span className="hidden sm:inline">Giỏ hàng</span>
                         {itemCount > 0 && (

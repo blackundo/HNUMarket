@@ -68,12 +68,12 @@ export function Navbar() {
           <div className="flex items-center gap-3">
             {/* Wishlist */}
             <Link href="/wishlist">
-              <Button variant="outline" className={`hidden sm:flex h-12 gap-2 border-gray-200 rounded-sm hover:border-primary hover:text-primary group`}>
+              <Button variant="outline" className={`hidden sm:flex h-12 gap-2 border-gray-200 rounded-sm hover:border-primary hover:text-accent-foreground group`}>
                 <div className="relative">
                   <Heart className="w-5 h-5" />
                   <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">0</span>
                 </div>
-                <span className="hidden lg:inline text-sm font-semibold text-gray-700 group-hover:text-primary">Yêu thích</span>
+                <span className="hidden lg:inline text-sm font-semibold text-gray-700 group-hover:text-accent-foreground">Yêu thích</span>
               </Button>
             </Link>
 

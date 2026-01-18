@@ -45,11 +45,11 @@ export function UserMenu({ user, onLogout, customTrigger }: UserMenuProps) {
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" className={`hidden sm:flex h-12 gap-2 border-gray-200 rounded-lg hover:border-[#75A02F] hover:text-[#75A02F] group`}>
+          <Button variant="outline" className={`hidden sm:flex h-12 gap-2 border-gray-200 rounded-lg hover:border-accent-foreground hover:text-accent-foreground group`}>
             <div className="relative">
               <User className="w-5 h-5" />
             </div>
-            <span className="hidden lg:inline text-sm font-semibold text-gray-700 group-hover:text-[#75A02F]">
+            <span className="hidden lg:inline text-sm font-semibold text-gray-700 group-hover:text-accent-foreground">
               {user ? user.fullName : "Tài khoản"}
             </span>
           </Button>
