@@ -6,8 +6,8 @@ import { UploadService } from './upload.service';
 /**
  * Upload Module
  *
- * Provides file upload functionality with Multer and Supabase Storage.
- * Uses memory storage for direct upload to Supabase.
+ * Provides file upload functionality with Multer and Cloudflare R2 Storage.
+ * Uses memory storage for direct upload to R2.
  */
 @Module({
   imports: [
@@ -19,4 +19,4 @@ import { UploadService } from './upload.service';
   providers: [UploadService],
   exports: [UploadService],
 })
-export class UploadModule {}
+export class UploadModule { }

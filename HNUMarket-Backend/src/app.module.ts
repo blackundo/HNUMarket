@@ -4,6 +4,7 @@ import { APP_FILTER } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SupabaseModule } from './common/supabase/supabase.module';
+import { R2StorageModule } from './common/storage/r2-storage.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { HealthModule } from './health/health.module';
 import { AuthModule } from './auth/auth.module';
@@ -28,6 +29,7 @@ import supabaseConfig from './config/supabase.config';
       load: [supabaseConfig],
     }),
     SupabaseModule,
+    R2StorageModule,
     HealthModule,
     AuthModule,
     ProductsModule,
@@ -52,4 +54,4 @@ import supabaseConfig from './config/supabase.config';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }

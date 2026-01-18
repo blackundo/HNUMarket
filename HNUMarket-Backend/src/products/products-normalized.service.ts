@@ -5,6 +5,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { SupabaseAdminService } from '../common/supabase/supabase-admin.service';
+import { R2StorageService } from '../common/storage/r2-storage.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CreateProductNormalizedDto } from './dto/create-product-normalized.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -22,7 +23,10 @@ import { TrashQueryDto } from './dto/trash-query.dto';
 export class ProductsNormalizedService {
   private readonly logger = new Logger(ProductsNormalizedService.name);
 
-  constructor(private supabaseAdmin: SupabaseAdminService) {}
+  constructor(
+    private supabaseAdmin: SupabaseAdminService,
+    private r2Storage: R2StorageService,
+  ) { }
 
   /**
    * Generate URL-friendly slug from product name
@@ -654,10 +658,10 @@ export class ProductsNormalizedService {
     const variantsPayload =
       normalizedOptions.length || normalizedVariants.length
         ? {
-            schema: 'normalized',
-            options: normalizedOptions,
-            variants: normalizedVariants,
-          }
+          schema: 'normalized',
+          options: normalizedOptions,
+          variants: normalizedVariants,
+        }
         : product.variants || [];
 
     // 3. Insert into trash table
@@ -800,10 +804,10 @@ export class ProductsNormalizedService {
     const variantsPayload = trashed.variants as
       | Array<Record<string, unknown>>
       | {
-          schema?: string;
-          options?: CreateProductNormalizedDto['options'];
-          variants?: CreateProductNormalizedDto['variants'];
-        };
+        schema?: string;
+        options?: CreateProductNormalizedDto['options'];
+        variants?: CreateProductNormalizedDto['variants'];
+      };
     if (Array.isArray(variantsPayload)) {
       if (variantsPayload.length) {
         const variantInserts = variantsPayload.map((v) => ({
@@ -866,15 +870,12 @@ export class ProductsNormalizedService {
       throw new Error(deleteError.message);
     }
 
-    // 3. Clean up images from storage
+    // 3. Clean up images from R2 storage
     const images = trashedProduct.images as Array<{ url: string }>;
     if (images?.length) {
       for (const img of images) {
         try {
-          const path = this.extractStoragePath(img.url);
-          if (path) {
-            await supabase.storage.from('products').remove([path]);
-          }
+          await this.r2Storage.deleteFileByUrl(img.url);
         } catch (error) {
           this.logger.warn(`Failed to delete image from storage: ${img.url}`);
         }
@@ -958,17 +959,14 @@ export class ProductsNormalizedService {
       throw new Error(deleteError.message);
     }
 
-    // 3. Clean up images from storage
+    // 3. Clean up images from R2 storage
     if (allTrash?.length) {
       for (const item of allTrash) {
         const images = item.images as Array<{ url: string }>;
         if (images?.length) {
           for (const img of images) {
             try {
-              const path = this.extractStoragePath(img.url);
-              if (path) {
-                await supabase.storage.from('products').remove([path]);
-              }
+              await this.r2Storage.deleteFileByUrl(img.url);
             } catch (error) {
               this.logger.warn(
                 `Failed to delete image from storage: ${img.url}`,
@@ -1035,20 +1033,5 @@ export class ProductsNormalizedService {
       `Bulk restore: ${results.success.length} succeeded, ${results.failed.length} failed`,
     );
     return results;
-  }
-
-  /**
-   * Extract storage path from Supabase storage URL
-   */
-  private extractStoragePath(url: string): string | null {
-    try {
-      const urlObj = new URL(url);
-      const pathMatch = urlObj.pathname.match(
-        /\/storage\/v1\/object\/public\/products\/(.+)$/,
-      );
-      return pathMatch ? pathMatch[1] : null;
-    } catch {
-      return null;
-    }
   }
 }

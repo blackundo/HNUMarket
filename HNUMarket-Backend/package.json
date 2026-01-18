@@ -17,9 +17,11 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "migrate:r2": "npx ts-node scripts/migrate-supabase-to-r2.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.971.0",
     "@nestjs/cache-manager": "^3.1.0",
     "@nestjs/common": "^10.4.15",
     "@nestjs/config": "^4.0.2",
@@ -31,6 +33,7 @@
     "cache-manager": "^7.2.7",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.3",
+    "dotenv": "^17.2.3",
     "jwks-rsa": "^3.2.1",
     "multer": "^2.0.2",
     "passport": "^0.7.0",
