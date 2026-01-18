@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { User, Settings, HelpCircle, LogOut } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { useMounted } from '@/hooks/use-mounted';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +15,11 @@ import {
 
 export function UserMenu() {
   const router = useRouter();
+  const mounted = useMounted();
+
+  if (!mounted) {
+    return null;
+  }
 
   const handleLogout = async () => {
     const supabase = createClient();

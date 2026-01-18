@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { StorefrontCategory, storefrontCategoriesApi } from '@/lib/api/storefront-categories';
+import { useMounted } from '@/hooks/use-mounted';
 
 export interface ProductsFilterState {
   category: string | null;
@@ -38,9 +39,14 @@ export function ProductsFilterBar({
   onSearchChange,
   onFiltersChange,
 }: ProductsFilterBarProps) {
+  const mounted = useMounted();
   const [localSearch, setLocalSearch] = useState(search);
   const [categories, setCategories] = useState<StorefrontCategory[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
+
+  if (!mounted) {
+    return null;
+  }
 
   // Fetch categories from storefront API (not admin API)
   useEffect(() => {
