@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
+import * as jwksRsa from 'jwks-rsa';
 
 /**
  * JWT payload structure from Supabase Auth tokens
@@ -30,20 +31,84 @@ export class SupabaseJwtStrategy extends PassportStrategy(
 ) {
   constructor(private configService: ConfigService) {
     const supabaseUrl = configService.get<string>('supabase.url');
+    const jwksUri = configService.get<string>('supabase.jwksUri');
     const jwtSecret = configService.get<string>('supabase.jwtSecret');
+    const apiKey =
+      configService.get<string>('supabase.serviceKey') ||
+      configService.get<string>('supabase.anonKey');
 
-    if (!jwtSecret) {
+    if (!supabaseUrl) {
       throw new Error(
-        'SUPABASE_JWT_SECRET is required for JWT authentication. ' +
-          'Get it from: Supabase Dashboard > Settings > API > JWT Secret',
+        'SUPABASE_URL is required for JWT authentication. ' +
+          'Check Supabase Dashboard > Settings > API.',
       );
     }
+
+    if (!jwksUri && !jwtSecret) {
+      throw new Error(
+        'Missing JWT verification configuration. ' +
+          'Provide SUPABASE_URL for JWKS (preferred) or SUPABASE_JWT_SECRET as a fallback.',
+      );
+    }
+
+    const jwksSecretProvider = jwksUri
+      ? jwksRsa.passportJwtSecret({
+          cache: true,
+          rateLimit: true,
+          jwksRequestsPerMinute: 10,
+          jwksUri,
+          requestHeaders: apiKey
+            ? {
+                apikey: apiKey,
+                Authorization: `Bearer ${apiKey}`,
+              }
+            : undefined,
+        })
+      : null;
 
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: jwtSecret,
       issuer: `${supabaseUrl}/auth/v1`,
+      algorithms: ['ES256', 'RS256', 'HS256'],
+      secretOrKeyProvider: (request, rawJwt, done) => {
+        try {
+          const [encodedHeader] = rawJwt.split('.');
+          const header = JSON.parse(
+            Buffer.from(encodedHeader, 'base64url').toString('utf8'),
+          );
+          const alg = header?.alg as string | undefined;
+
+          const wantsSymmetric = alg?.startsWith('HS');
+          if (wantsSymmetric) {
+            if (!jwtSecret) {
+              return done(
+                new UnauthorizedException(
+                  'No HS secret configured for token verification',
+                ),
+              );
+            }
+            return done(null, jwtSecret);
+          }
+
+          if (!jwksSecretProvider) {
+            return done(
+              new UnauthorizedException(
+                'JWKS is required to verify this token algorithm',
+              ),
+            );
+          }
+
+          jwksSecretProvider(request, rawJwt, (error, key) => {
+            if (error) {
+              return done(error);
+            }
+            return done(null, key);
+          });
+        } catch (error) {
+          return done(error as Error);
+        }
+      },
     });
   }
 

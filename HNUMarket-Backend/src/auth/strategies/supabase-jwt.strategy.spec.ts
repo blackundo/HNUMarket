@@ -3,6 +3,11 @@ import { ConfigService } from '@nestjs/config';
 import { UnauthorizedException } from '@nestjs/common';
 import { SupabaseJwtStrategy } from './supabase-jwt.strategy';
 
+jest.mock('jwks-rsa', () => {
+  const mockPassportJwtSecret = jest.fn(() => jest.fn());
+  return { passportJwtSecret: mockPassportJwtSecret };
+});
+
 describe('SupabaseJwtStrategy', () => {
   let strategy: SupabaseJwtStrategy;
   let configService: ConfigService;
@@ -12,6 +17,7 @@ describe('SupabaseJwtStrategy', () => {
       const config: Record<string, string> = {
         'supabase.url': 'https://test.supabase.co',
         'supabase.jwtSecret': 'test-jwt-secret-key',
+        'supabase.jwksUri': 'https://test.supabase.co/auth/v1/keys',
       };
       return config[key];
     }),
@@ -35,15 +41,18 @@ describe('SupabaseJwtStrategy', () => {
 
       strategy = module.get<SupabaseJwtStrategy>(SupabaseJwtStrategy);
       expect(strategy).toBeDefined();
+      expect(mockConfigService.get).toHaveBeenCalledWith('supabase.url');
+      expect(mockConfigService.get).toHaveBeenCalledWith('supabase.jwksUri');
       expect(mockConfigService.get).toHaveBeenCalledWith('supabase.jwtSecret');
     });
 
-    it('should throw error when JWT_SECRET is missing', () => {
+    it('should throw error when SUPABASE_URL is missing', () => {
       const invalidConfigService = {
         get: jest.fn((key: string) => {
           const config: Record<string, string | undefined> = {
-            'supabase.url': 'https://test.supabase.co',
-            'supabase.jwtSecret': undefined,
+            'supabase.url': undefined,
+            'supabase.jwtSecret': 'test',
+            'supabase.jwksUri': undefined,
           };
           return config[key];
         }),
@@ -52,7 +61,7 @@ describe('SupabaseJwtStrategy', () => {
       // The error is thrown in the constructor when the strategy is instantiated
       expect(() => {
         new SupabaseJwtStrategy(invalidConfigService as any);
-      }).toThrow('SUPABASE_JWT_SECRET is required');
+      }).toThrow('SUPABASE_URL is required');
     });
 
     it('should call ConfigService.get with correct keys', async () => {

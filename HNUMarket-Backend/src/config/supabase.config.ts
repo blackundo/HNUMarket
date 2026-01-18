@@ -5,6 +5,7 @@ export default registerAs('supabase', () => {
   const anonKey = process.env.SUPABASE_ANON_KEY;
   const serviceKey = process.env.SUPABASE_SERVICE_KEY;
   const jwtSecret = process.env.SUPABASE_JWT_SECRET;
+  const jwksUri = url ? `${url}/auth/v1/keys` : undefined;
 
   if (!url || !anonKey || !serviceKey) {
     throw new Error(
@@ -13,17 +14,11 @@ export default registerAs('supabase', () => {
     );
   }
 
-  if (!jwtSecret) {
-    throw new Error(
-      'Missing SUPABASE_JWT_SECRET environment variable. ' +
-        'Get it from: Supabase Dashboard > Settings > API > JWT Secret',
-    );
-  }
-
   return {
     url,
     anonKey,
     serviceKey,
     jwtSecret,
+    jwksUri,
   };
 });
