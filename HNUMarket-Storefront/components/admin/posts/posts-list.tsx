@@ -14,7 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { FileText, Search, Plus, Pencil, Trash2, Eye, EyeOff } from 'lucide-react';
+import { FileText, Search, Plus, Pencil, Trash2, Eye, EyeOff, ExternalLink } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -207,6 +207,22 @@ export function PostsList() {
                                             </TableCell>
                                             <TableCell className="text-right">
                                                 <div className="flex justify-end gap-2">
+                                                    {post.status === 'published' && post.slug && (
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            asChild
+                                                            title="Xem bài viết"
+                                                        >
+                                                            <a
+                                                                href={`/blog/${post.slug}`}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                            >
+                                                                <ExternalLink className="h-4 w-4 text-blue-600" />
+                                                            </a>
+                                                        </Button>
+                                                    )}
                                                     <Button
                                                         variant="ghost"
                                                         size="sm"
@@ -236,4 +252,3 @@ export function PostsList() {
         </div>
     );
 }
-

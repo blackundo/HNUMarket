@@ -1,14 +1,21 @@
-import { BookOpen } from "lucide-react";
-// import { getAllBlogPosts } from "@/data/blog-posts-helpers"; // REMOVED: Mock data
-import { BlogPostCard } from "@/components/blog/blog-post-card";
+import { BookOpen } from 'lucide-react';
+import { BlogPostCard } from '@/components/blog/blog-post-card';
+import { storefrontPostsApi } from '@/lib/api/storefront-posts';
 
 /**
- * Blog listing page showing all blog posts
- * TODO: Fetch blog posts from real API
+ * Blog listing page showing all published blog posts
  */
 export default async function BlogPage() {
-  // TODO: Replace with real API call to fetch blog posts
-  const posts: any[] = []; // getAllBlogPosts();
+  let posts: any[] = [];
+  let total = 0;
+
+  try {
+    const response = await storefrontPostsApi.getPosts({ limit: 20 });
+    posts = response.data;
+    total = response.meta.total;
+  } catch (error) {
+    console.error('Failed to fetch blog posts:', error);
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -20,12 +27,8 @@ export default async function BlogPage() {
               <BookOpen className="w-8 h-8 text-primary" strokeWidth={1.5} />
             </div>
             <div>
-              <h1 className="text-2xl lg:text-3xl font-bold mb-1">
-                Blog
-              </h1>
-              <p className="text-gray-600">
-                {posts.length} bài viết
-              </p>
+              <h1 className="text-2xl lg:text-3xl font-bold mb-1">Blog</h1>
+              <p className="text-gray-600">{total} bài viết</p>
             </div>
           </div>
         </div>
@@ -40,12 +43,8 @@ export default async function BlogPage() {
         ) : (
           <div className="bg-white rounded-lg p-12 text-center">
             <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-medium text-gray-900 mb-2">
-              Chưa có bài viết
-            </h3>
-            <p className="text-gray-600">
-              Hiện tại chưa có bài viết nào.
-            </p>
+            <h3 className="text-xl font-medium text-gray-900 mb-2">Chưa có bài viết</h3>
+            <p className="text-gray-600">Hiện tại chưa có bài viết nào.</p>
           </div>
         )}
       </div>
