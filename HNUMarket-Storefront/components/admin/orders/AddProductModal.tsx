@@ -81,17 +81,18 @@ export function AddProductModal({ open, onClose, onAdd, adding = false }: AddPro
   }, [open, resetVariantSelection]);
 
   // Helper to get valid image URL or placeholder
+  const placeholderImage = '/images/product-placeholder.svg';
   const getImageUrl = (product: StorefrontProduct): string => {
     const image = product.images?.[0];
 
     // Handle undefined/null
     if (!image) {
-      return '/placeholder.png';
+      return placeholderImage;
     }
 
     // StorefrontProduct.images is ProductImage[] with { url: string }
     const url = image.url;
-    return url && url !== '' ? url : '/placeholder.png';
+    return url && url !== '' ? url : placeholderImage;
   };
 
   // Calculate max quantity

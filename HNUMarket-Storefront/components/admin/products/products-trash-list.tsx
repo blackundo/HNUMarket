@@ -191,7 +191,7 @@ export function ProductsTrashList() {
             <div className="space-y-4">
               {trashProducts.map((product) => {
                 const images = product.images as Array<{ url: string; alt_text?: string }>;
-                const imageUrl = images?.[0]?.url || '/placeholder.png';
+                const imageUrl = images?.[0]?.url || '/images/product-placeholder.svg';
                 const daysUntilExpiry = Math.ceil(
                   (new Date(product.expires_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
                 );

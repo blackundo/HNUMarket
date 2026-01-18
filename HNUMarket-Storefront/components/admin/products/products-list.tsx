@@ -259,7 +259,8 @@ export function ProductsList() {
                         )}
                         renderMobileCard={(product) => {
                             const images = (product.images || []) as ProductImage[];
-                            const imageUrl = images[0]?.url || '/placeholder.png';
+                            const placeholderImage = '/images/product-placeholder.svg';
+                            const imageUrl = images.find((img) => img?.url)?.url || placeholderImage;
                             const category = product.category?.name;
 
                             return (

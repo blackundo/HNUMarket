@@ -48,7 +48,7 @@ export const productsColumns: ColumnDef<Product>[] = [
     header: 'Ảnh',
     cell: ({ row }) => {
       const images = row.getValue('images') as ProductImage[];
-      const imageUrl = images?.[0]?.url || '/placeholder.png';
+      const imageUrl = images?.[0]?.url || '/images/product-placeholder.svg';
       const name = row.original.name;
 
       return (

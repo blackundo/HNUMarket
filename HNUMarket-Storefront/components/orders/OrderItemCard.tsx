@@ -28,7 +28,7 @@ export function OrderItemCard({
       const url = (image as { url?: string }).url;
       if (url && url !== '') return url;
     }
-    return '/placeholder.png';
+    return '/images/product-placeholder.svg';
   })();
 
   return (
