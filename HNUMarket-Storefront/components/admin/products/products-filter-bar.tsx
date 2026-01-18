@@ -44,10 +44,6 @@ export function ProductsFilterBar({
   const [categories, setCategories] = useState<StorefrontCategory[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
 
-  if (!mounted) {
-    return null;
-  }
-
   // Fetch categories from storefront API (not admin API)
   useEffect(() => {
     const fetchCategories = async () => {
@@ -73,6 +69,10 @@ export function ProductsFilterBar({
 
     return () => clearTimeout(timer);
   }, [localSearch, onSearchChange]);
+
+  if (!mounted) {
+    return null;
+  }
 
   const handleClearFilters = () => {
     setLocalSearch('');
