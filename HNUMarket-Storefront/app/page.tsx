@@ -3,7 +3,7 @@ import { storefrontProductsApi } from "@/lib/api/storefront-products";
 import { storefrontCategoriesApi } from "@/lib/api/storefront-categories";
 import { storefrontHomepageSectionsApi } from "@/lib/api/homepage-sections";
 import { transformProducts, transformCategories } from "@/lib/helpers/transform-api-data";
-import { HeroSlider } from "@/components/home/hero-slider";
+import { HeroSection } from "@/components/home/hero-section";
 import { CategoriesBar } from "@/components/home/categories-bar";
 import { HomepageSection } from "@/components/home/homepage-section";
 import Link from "next/link";
@@ -40,11 +40,13 @@ export default async function Home() {
 
   return (
     <div>
-      {/* Hero Slider */}
-      <HeroSlider />
+      {/* Hero Section with Categories Sidebar */}
+      <HeroSection categories={categories} />
 
-      {/* Categories - Sticky on scroll */}
-      <CategoriesBar categories={categories} />
+      {/* Categories Bar - Mobile/Tablet alternative view */}
+      <div className="lg:hidden">
+        <CategoriesBar categories={categories} />
+      </div>
 
       {/* Flash Sale */}
       {flashSaleProducts.length > 0 && (
