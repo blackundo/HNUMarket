@@ -63,7 +63,7 @@ function SortableCategoryRow({ category, onEdit, onDelete, disabled }: SortableC
 
   return (
     <tr ref={setNodeRef} style={style} className="border-b transition-colors hover:bg-muted/50">
-      <td className="p-4">
+      <td className="p-2 md:p-4">
         <button
           type="button"
           className={disabled ? "cursor-not-allowed p-1 opacity-50" : "cursor-grab active:cursor-grabbing p-1 hover:bg-muted rounded"}
@@ -74,17 +74,17 @@ function SortableCategoryRow({ category, onEdit, onDelete, disabled }: SortableC
           <GripVertical className="h-5 w-5 text-muted-foreground" />
         </button>
       </td>
-      <td className="p-4">
+      <td className="p-2 md:p-4">
         <div className="flex items-center gap-3">
           {category.image_url && (
             <img
               src={category.image_url}
               alt={category.name}
-              className="h-10 w-10 rounded object-cover"
+              className="h-10 w-10 rounded object-cover flex-shrink-0"
             />
           )}
-          <div>
-            <div className="font-medium font-heading">{category.name}</div>
+          <div className="min-w-0">
+            <div className="font-medium font-heading truncate">{category.name}</div>
             {category.description && (
               <div className="text-sm text-muted-foreground font-body line-clamp-1">
                 {category.description}
@@ -93,23 +93,23 @@ function SortableCategoryRow({ category, onEdit, onDelete, disabled }: SortableC
           </div>
         </div>
       </td>
-      <td className="p-4">
+      <td className="p-4 hidden lg:table-cell">
         <code className="text-xs bg-gray-100 px-2 py-1 rounded font-mono">
           {category.slug}
         </code>
       </td>
-      <td className="p-4">
+      <td className="p-4 hidden md:table-cell">
         {category.parent ? (
           <span className="text-sm font-body">{category.parent.name}</span>
         ) : (
           <span className="text-sm text-muted-foreground font-body">—</span>
         )}
       </td>
-      <td className="p-4">
+      <td className="p-4 hidden md:table-cell">
         <span className="text-sm font-body">{category.display_order}</span>
       </td>
       <td className="p-4">
-        <Badge variant={category.is_active ? 'admin' : 'secondary'}>
+        <Badge variant={category.is_active ? 'admin' : 'secondary'} className="whitespace-nowrap">
           {category.is_active ? (
             <>
               <Eye className="h-3 w-3 mr-1 inline" />
@@ -118,33 +118,37 @@ function SortableCategoryRow({ category, onEdit, onDelete, disabled }: SortableC
           ) : (
             <>
               <EyeOff className="h-3 w-3 mr-1 inline" />
-              Không hoạt động
+              Ẩn
             </>
           )}
         </Badge>
       </td>
-      <td className="p-4">
+      <td className="p-4 hidden xl:table-cell">
         <span className="text-sm text-muted-foreground font-body">
           {formatDate(category.created_at)}
         </span>
       </td>
-      <td className="p-4">
-        <div className="flex justify-end gap-2">
+      <td className="p-2 md:p-4 text-right">
+        <div className="flex justify-end gap-1 md:gap-2">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => onEdit(category.id)}
             title="Sửa"
+            className="h-8 w-8 p-0 md:h-9 md:w-auto md:px-3"
           >
-            <Pencil className="h-4 w-4" />
+            <Pencil className="h-4 w-4 md:mr-2" />
+            <span className="hidden md:inline">Sửa</span>
           </Button>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => onDelete(category.id, category.name)}
             title="Xóa"
+            className="h-8 w-8 p-0 md:h-9 md:w-auto md:px-3"
           >
-            <Trash2 className="h-4 w-4 text-destructive" />
+            <Trash2 className="h-4 w-4 text-destructive md:mr-2" />
+            <span className="hidden md:inline">Xóa</span>
           </Button>
         </div>
       </td>
@@ -402,37 +406,39 @@ export function CategoriesList() {
                   collisionDetection={closestCenter}
                   onDragEnd={handleDragEnd}
                 >
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b bg-muted/50">
-                        <th className="h-12 px-4 w-12"></th>
-                        <th className="h-12 px-4 text-left align-middle font-medium font-heading">Danh mục</th>
-                        <th className="h-12 px-4 text-left align-middle font-medium font-heading">Slug</th>
-                        <th className="h-12 px-4 text-left align-middle font-medium font-heading">Danh mục cha</th>
-                        <th className="h-12 px-4 text-left align-middle font-medium font-heading">Thứ tự</th>
-                        <th className="h-12 px-4 text-left align-middle font-medium font-heading">Trạng thái</th>
-                        <th className="h-12 px-4 text-left align-middle font-medium font-heading">Ngày tạo</th>
-                        <th className="h-12 px-4 text-right align-middle font-medium font-heading">Thao tác</th>
-                      </tr>
-                    </thead>
-                    <SortableContext
-                      items={data.map(c => c.id)}
-                      strategy={verticalListSortingStrategy}
-                      disabled={isLoading || reordering}
-                    >
-                      <tbody>
-                        {data.map((category) => (
-                          <SortableCategoryRow
-                            key={category.id}
-                            category={category}
-                            onEdit={handleEdit}
-                            onDelete={handleDelete}
-                            disabled={isLoading || reordering}
-                          />
-                        ))}
-                      </tbody>
-                    </SortableContext>
-                  </table>
+                  <div className="overflow-x-auto">
+                    <table className="w-full min-w-[600px] md:min-w-full">
+                      <thead>
+                        <tr className="border-b bg-muted/50">
+                          <th className="h-12 px-4 w-12"></th>
+                          <th className="h-12 px-4 text-left align-middle font-medium font-heading">Danh mục</th>
+                          <th className="h-12 px-4 text-left align-middle font-medium font-heading hidden lg:table-cell">Slug</th>
+                          <th className="h-12 px-4 text-left align-middle font-medium font-heading hidden md:table-cell">Danh mục cha</th>
+                          <th className="h-12 px-4 text-left align-middle font-medium font-heading hidden md:table-cell">Thứ tự</th>
+                          <th className="h-12 px-4 text-left align-middle font-medium font-heading">Trạng thái</th>
+                          <th className="h-12 px-4 text-left align-middle font-medium font-heading hidden xl:table-cell">Ngày tạo</th>
+                          <th className="h-12 px-4 text-right align-middle font-medium font-heading">Thao tác</th>
+                        </tr>
+                      </thead>
+                      <SortableContext
+                        items={data.map(c => c.id)}
+                        strategy={verticalListSortingStrategy}
+                        disabled={isLoading || reordering}
+                      >
+                        <tbody>
+                          {data.map((category) => (
+                            <SortableCategoryRow
+                              key={category.id}
+                              category={category}
+                              onEdit={handleEdit}
+                              onDelete={handleDelete}
+                              disabled={isLoading || reordering}
+                            />
+                          ))}
+                        </tbody>
+                      </SortableContext>
+                    </table>
+                  </div>
                 </DndContext>
 
                 {/* Pagination */}
