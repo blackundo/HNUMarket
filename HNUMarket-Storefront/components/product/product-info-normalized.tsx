@@ -261,7 +261,7 @@ export function ProductInfoNormalized({ product }: ProductInfoNormalizedProps) {
                 />
               )}
 
-              {product.specifications && (
+              {/* {product.specifications && (
                 <div>
                   <h4 className="font-semibold text-sm mb-2 text-gray-900">
                     Thông số kỹ thuật
@@ -284,7 +284,7 @@ export function ProductInfoNormalized({ product }: ProductInfoNormalizedProps) {
                     )}
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
 
             {!isDetailsExpanded && (

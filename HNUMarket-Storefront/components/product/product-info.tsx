@@ -309,7 +309,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
                 />
               )}
 
-              {product.specifications && (
+              {/* {product.specifications && (
                 <div>
                   <h4 className="font-semibold text-sm mb-2 text-gray-900">
                     Thông số kỹ thuật
@@ -332,7 +332,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
                     )}
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
 
             {!isDetailsExpanded && (
