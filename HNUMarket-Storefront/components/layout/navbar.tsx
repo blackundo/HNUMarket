@@ -41,7 +41,7 @@ export function Navbar() {
               <Link href="/wishlist" className="hover:text-primary transition-colors">Yêu thích</Link>
             </div>
             <span className="w-px h-3 bg-gray-300"></span>
-            <p>Chúng tôi giao hàng đến bạn mỗi ngày từ 7:00 đến 22:00</p>
+            <p>Chúng tôi mở cửa mỗi ngày từ 9:00 sáng - 02:00 đêm</p>
           </div>
           <div className="flex items-center gap-4">
             <Link href="/order-check" className="hover:text-primary transition-colors">Kiểm tra đơn hàng</Link>
