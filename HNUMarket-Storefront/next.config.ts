@@ -6,9 +6,14 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "cdn.hnumarket.com",
+      },
+      {
+        protocol: "https",
         hostname: "**",
       },
     ],
+    // unoptimized: true, // Enable this if sharp still causes issues
   },
 };
 
