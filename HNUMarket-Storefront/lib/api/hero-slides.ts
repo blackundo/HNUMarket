@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/client';
+import { getAuthHeaders } from '@/lib/supabase/auth-helpers';
 import type {
   CreateHeroSlideInput,
   UpdateHeroSlideInput,
@@ -8,24 +8,7 @@ import { API_BASE_URL } from '@/lib/config/api';
 
 const API_URL = API_BASE_URL;
 
-/**
- * Get authentication headers with JWT token
- */
-async function getAuthHeaders(): Promise<HeadersInit> {
-  const supabase = createClient();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
 
-  if (!session?.access_token) {
-    throw new Error('Not authenticated');
-  }
-
-  return {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${session.access_token}`,
-  };
-}
 
 /**
  * Hero Slide API response types

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import type { User, AuthContextValue } from '@/types/auth';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
@@ -14,31 +14,97 @@ const MIN_PASSWORD_LENGTH = 6;
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
-  const supabase = createClient();
+
+  // Create stable Supabase client instance using useMemo
+  // This prevents re-creating client on every render while allowing
+  // proper per-tab client instances (no singleton pattern)
+  const supabase = useMemo(() => createClient(), []);
 
   // Initialize auth state and listen for changes
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setUser(mapSupabaseUser(session.user));
-      }
-      setIsInitialized(true);
-    });
+    let isMounted = true;
+    let authSubscription: { unsubscribe: () => void } | null = null;
 
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        setUser(mapSupabaseUser(session.user));
-      } else {
-        setUser(null);
-      }
-    });
+    const initializeAuth = async () => {
+      try {
+        // CRITICAL FIX: Setup listener BEFORE calling getUser() to avoid race condition
+        // This ensures we catch the auth state change when session is ready
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+          async (event, session) => {
+            if (!isMounted) return;
 
-    return () => subscription.unsubscribe();
-  }, [supabase]);
+            console.log('[Auth] State change:', event, session?.user?.id);
+
+            // Update user state based on session
+            if (session?.user) {
+              setUser(mapSupabaseUser(session.user));
+            } else {
+              setUser(null);
+            }
+
+            // Set initialized after first auth event
+            // This ensures we wait for Supabase to validate the session
+            if (!isInitialized) {
+              setIsInitialized(true);
+            }
+          }
+        );
+
+        authSubscription = subscription;
+
+        // Now trigger getUser() which will fire onAuthStateChange
+        // getUser() validates the JWT while getSession() only reads from storage
+        const { data: { user: supabaseUser }, error } = await supabase.auth.getUser();
+
+        if (isMounted) {
+          // Fallback: If onAuthStateChange doesn't fire (rare case),
+          // set initial state manually
+          if (!isInitialized) {
+            if (supabaseUser && !error) {
+              setUser(mapSupabaseUser(supabaseUser));
+            } else {
+              setUser(null);
+            }
+            setIsInitialized(true);
+          }
+        }
+      } catch (error) {
+        console.error('[Auth] Initialization error:', error);
+        if (isMounted) {
+          setUser(null);
+          setIsInitialized(true);
+        }
+      }
+    };
+
+    initializeAuth();
+
+    // Cross-tab sync: Listen for storage changes to sync auth state
+    // Note: Supabase's onAuthStateChange already handles most cross-tab sync,
+    // but we keep this as a fallback for edge cases
+    const handleStorageChange = (event: StorageEvent) => {
+      // Supabase stores auth data with keys containing 'supabase.auth'
+      if (event.key?.includes('supabase.auth') && isMounted) {
+        console.log('[Auth] Storage change detected in another tab');
+        // Let onAuthStateChange handle the update
+        // Supabase automatically detects localStorage changes
+      }
+    };
+
+    // Only add storage listener in browser environment
+    if (typeof window !== 'undefined') {
+      window.addEventListener('storage', handleStorageChange);
+    }
+
+    return () => {
+      isMounted = false;
+      authSubscription?.unsubscribe();
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('storage', handleStorageChange);
+      }
+    };
+  }, []); // Empty deps: Only run once on mount, Supabase client is stable
+
 
   // Map Supabase user to our User type
   const mapSupabaseUser = (supabaseUser: SupabaseUser): User => {

@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/client';
+import { getAuthHeaders, getOptionalAuthHeaders } from '@/lib/supabase/auth-helpers';
 import { API_BASE_URL } from '@/lib/config/api';
 import type {
   Order,
@@ -53,11 +53,11 @@ function normalizeOrder(raw: any): Order {
     updatedAt: raw.updatedAt ?? raw.updated_at,
     user: raw.user
       ? {
-          id: raw.user.id,
-          fullName: raw.user.fullName ?? raw.user.full_name ?? undefined,
-          email: raw.user.email ?? undefined,
-          avatarUrl: raw.user.avatarUrl ?? raw.user.avatar_url ?? undefined,
-        }
+        id: raw.user.id,
+        fullName: raw.user.fullName ?? raw.user.full_name ?? undefined,
+        email: raw.user.email ?? undefined,
+        avatarUrl: raw.user.avatarUrl ?? raw.user.avatar_url ?? undefined,
+      }
       : undefined,
   };
 }
@@ -75,47 +75,20 @@ function buildQueryString(params?: OrderQueryParams): string {
 }
 
 /**
- * Get authentication headers with JWT token
- */
-async function getAuthHeaders(): Promise<HeadersInit> {
-  const supabase = createClient();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (!session?.access_token) {
-    throw new Error('Not authenticated');
-  }
-
-  return {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${session.access_token}`,
-  };
-}
-
-/**
- * Get optional auth headers (for endpoints that work with or without auth)
- */
-async function getOptionalAuthHeaders(): Promise<HeadersInit> {
-  try {
-    return await getAuthHeaders();
-  } catch {
-    return {
-      'Content-Type': 'application/json',
-    };
-  }
-}
-
-/**
  * Create a new order
  * Public endpoint (guest or authenticated)
  */
 export async function createOrder(data: CreateOrderDto): Promise<Order> {
   const headers = await getOptionalAuthHeaders();
 
-  // Create AbortController for timeout
+  // Create AbortController for timeout with proper cleanup
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
+  let timedOut = false;
+
+  const timeoutId = setTimeout(() => {
+    timedOut = true;
+    controller.abort('Request timeout after 30 seconds');
+  }, 30000); // 30s timeout
 
   try {
     const response = await fetch(`${API_URL}/orders`, {
@@ -125,7 +98,10 @@ export async function createOrder(data: CreateOrderDto): Promise<Order> {
       signal: controller.signal,
     });
 
-    clearTimeout(timeoutId);
+    // Only clear timeout if it hasn't fired yet
+    if (!timedOut) {
+      clearTimeout(timeoutId);
+    }
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({ message: 'Failed to create order' }));
@@ -135,11 +111,18 @@ export async function createOrder(data: CreateOrderDto): Promise<Order> {
     const order = await response.json();
     return normalizeOrder(order);
   } catch (error) {
-    clearTimeout(timeoutId);
+    // Only clear timeout if it hasn't fired yet
+    if (!timedOut) {
+      clearTimeout(timeoutId);
+    }
 
     // Handle timeout specifically
     if (error instanceof Error && error.name === 'AbortError') {
-      throw new Error('Yêu cầu tạo đơn hàng quá lâu. Vui lòng kiểm tra kết nối mạng và thử lại.');
+      if (timedOut) {
+        throw new Error('Yêu cầu tạo đơn hàng quá lâu. Vui lòng kiểm tra kết nối mạng và thử lại.');
+      }
+      // Aborted for another reason (user navigation, etc)
+      throw new Error('Yêu cầu tạo đơn hàng bị hủy.');
     }
 
     throw error;

@@ -46,16 +46,17 @@ export const authProvider: AuthProvider = {
 
   check: async () => {
     const supabase = createClient();
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
 
-    if (session) {
+    // Use getUser() instead of getSession() for secure token validation
+    // getUser() validates the JWT while getSession() only reads from storage
+    const { data: { user }, error } = await supabase.auth.getUser();
+
+    if (user && !error) {
       // Verify admin role
       const { data: profile } = await supabase
         .from('profiles')
         .select('role')
-        .eq('id', session.user.id)
+        .eq('id', user.id)
         .single();
 
       if (profile?.role === 'admin') {

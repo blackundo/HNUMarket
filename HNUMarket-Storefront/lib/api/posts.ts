@@ -1,24 +1,10 @@
-import { createClient } from '@/lib/supabase/client';
+import { getOptionalAuthHeaders } from '@/lib/supabase/auth-helpers';
 import { API_BASE_URL } from '@/lib/config/api';
 
 const API_URL = API_BASE_URL;
 
-/**
- * Get authentication headers with JWT token
- */
-async function getAuthHeader(): Promise<Record<string, string>> {
-  const supabase = createClient();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (!session?.access_token) {
-    return {};
-  }
-
-  return {
-    Authorization: `Bearer ${session.access_token}`,
-  };
+async function getAuthHeader(): Promise<HeadersInit> {
+  return getOptionalAuthHeaders();
 }
 
 /**

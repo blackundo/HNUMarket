@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/client';
+import { getAuthHeaders, getAccessToken } from '@/lib/supabase/auth-helpers';
 import type {
   CreateProductInput,
   UpdateProductInput,
@@ -8,24 +8,7 @@ import { API_BASE_URL } from '@/lib/config/api';
 
 const API_URL = API_BASE_URL;
 
-/**
- * Get authentication headers with JWT token
- */
-async function getAuthHeaders(): Promise<HeadersInit> {
-  const supabase = createClient();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
 
-  if (!session?.access_token) {
-    throw new Error('Not authenticated');
-  }
-
-  return {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${session.access_token}`,
-  };
-}
 
 /**
  * Product API response types
@@ -169,8 +152,8 @@ export const productsApi = {
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({ message: response.statusText }));
-      const errorMessage = Array.isArray(error.message) 
-        ? error.message.join(', ') 
+      const errorMessage = Array.isArray(error.message)
+        ? error.message.join(', ')
         : error.message || 'Failed to create product';
       throw new Error(errorMessage);
     }
@@ -191,8 +174,8 @@ export const productsApi = {
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({ message: response.statusText }));
-      const errorMessage = Array.isArray(error.message) 
-        ? error.message.join(', ') 
+      const errorMessage = Array.isArray(error.message)
+        ? error.message.join(', ')
         : error.message || 'Failed to update product';
       throw new Error(errorMessage);
     }
@@ -361,12 +344,9 @@ export const uploadApi = {
    * Upload single file
    */
   async uploadFile(file: File): Promise<{ url: string }> {
-    const supabase = createClient();
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
+    const token = await getAccessToken();
 
-    if (!session?.access_token) {
+    if (!token) {
       throw new Error('Not authenticated');
     }
 
@@ -376,7 +356,7 @@ export const uploadApi = {
     const response = await fetch(`${API_URL}/admin/upload/single`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${session.access_token}`,
+        Authorization: `Bearer ${token}`,
       },
       body: formData,
     });
@@ -393,12 +373,9 @@ export const uploadApi = {
    * Upload multiple files
    */
   async uploadFiles(files: File[]): Promise<{ urls: string[] }> {
-    const supabase = createClient();
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
+    const token = await getAccessToken();
 
-    if (!session?.access_token) {
+    if (!token) {
       throw new Error('Not authenticated');
     }
 
@@ -410,7 +387,7 @@ export const uploadApi = {
     const response = await fetch(`${API_URL}/admin/upload/multiple`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${session.access_token}`,
+        Authorization: `Bearer ${token}`,
       },
       body: formData,
     });

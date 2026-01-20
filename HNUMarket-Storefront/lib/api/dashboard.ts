@@ -1,19 +1,10 @@
-import { createClient } from '@/lib/supabase/client';
+import { getOptionalAuthHeaders } from '@/lib/supabase/auth-helpers';
 import { API_BASE_URL } from '@/lib/config/api';
 
 const API_URL = API_BASE_URL;
 
-async function getAuthHeader(): Promise<Record<string, string>> {
-  const supabase = createClient();
-  const { data: { session } } = await supabase.auth.getSession();
-
-  if (!session?.access_token) {
-    return {};
-  }
-
-  return {
-    Authorization: `Bearer ${session.access_token}`,
-  };
+async function getAuthHeader(): Promise<HeadersInit> {
+  return getOptionalAuthHeaders();
 }
 
 export interface DashboardStats {
@@ -108,9 +99,9 @@ export async function getOrdersData(): Promise<{
   const data = await response.json();
   const statusData = Array.isArray(data?.statusData)
     ? data.statusData.map((item: OrderStatusData) => ({
-        ...item,
-        count: Number(item.count) || 0,
-      }))
+      ...item,
+      count: Number(item.count) || 0,
+    }))
     : [];
 
   return {
@@ -134,16 +125,16 @@ export async function getProductsData(): Promise<{
   const data = await response.json();
   const topProducts = Array.isArray(data?.topProducts)
     ? data.topProducts.map((product: TopProduct) => ({
-        ...product,
-        total_sold: Number(product.total_sold) || 0,
-        total_revenue: Number(product.total_revenue) || 0,
-      }))
+      ...product,
+      total_sold: Number(product.total_sold) || 0,
+      total_revenue: Number(product.total_revenue) || 0,
+    }))
     : [];
   const lowStockProducts = Array.isArray(data?.lowStockProducts)
     ? data.lowStockProducts.map((product: LowStockProduct) => ({
-        ...product,
-        stock: Number(product.stock) || 0,
-      }))
+      ...product,
+      stock: Number(product.stock) || 0,
+    }))
     : [];
 
   return { topProducts, lowStockProducts };

@@ -1,26 +1,7 @@
 import { DataProvider } from '@refinedev/core';
-import { createClient } from '@/lib/supabase/client';
+import { getAuthHeaders } from '@/lib/supabase/auth-helpers';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
-
-/**
- * Get authentication headers with JWT token
- */
-async function getAuthHeaders(): Promise<HeadersInit> {
-    const supabase = createClient();
-    const {
-        data: { session },
-    } = await supabase.auth.getSession();
-
-    if (!session?.access_token) {
-        throw new Error('Not authenticated');
-    }
-
-    return {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${session.access_token}`,
-    };
-}
 
 /**
  * Custom Data Provider for NestJS Backend API

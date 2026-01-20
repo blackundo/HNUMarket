@@ -1,10 +1,18 @@
 import { createBrowserClient } from '@supabase/ssr';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 /**
  * Create Supabase browser client for client-side operations
  *
- * Used in Client Components for authentication and data fetching.
- * Automatically handles cookie-based session management.
+ * Creates a fresh client instance with proper configuration for:
+ * - PKCE auth flow (more secure than implicit flow)
+ * - Automatic token refresh across tabs
+ * - Session persistence in localStorage
+ * - Cross-tab session synchronization
+ *
+ * Note: Supabase internally handles client caching and deduplication,
+ * so we don't need a manual singleton pattern. Each tab gets its own
+ * client instance which properly syncs via localStorage events.
  *
  * @returns Supabase client instance
  *
@@ -26,9 +34,23 @@ import { createBrowserClient } from '@supabase/ssr';
  * }
  * ```
  */
-export function createClient() {
+export function createClient(): SupabaseClient {
   return createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      auth: {
+        // Use PKCE flow for better security (default in newer versions)
+        flowType: 'pkce',
+        // Enable automatic token refresh
+        autoRefreshToken: true,
+        // Detect session from URL hash fragments (for OAuth callbacks)
+        detectSessionInUrl: true,
+        // Persist session in localStorage for cross-tab sync
+        persistSession: true,
+        // Use localStorage for session storage (enables cross-tab sync)
+        storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+      },
+    }
   );
 }

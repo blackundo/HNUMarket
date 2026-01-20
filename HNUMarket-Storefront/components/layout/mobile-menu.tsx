@@ -37,16 +37,16 @@ export function MobileMenu() {
       try {
         setLoading(true);
 
-        // Fetch user session
-        const { data: { session } } = await supabase.auth.getSession();
-        setUser(session?.user ?? null);
+        // Use getUser() instead of getSession() for secure token validation
+        const { data: { user: currentUser }, error } = await supabase.auth.getUser();
+        setUser(currentUser ?? null);
 
         // Check if user is admin
-        if (session?.user) {
+        if (currentUser && !error) {
           const { data: profile } = await supabase
             .from('profiles')
             .select('role')
-            .eq('id', session.user.id)
+            .eq('id', currentUser.id)
             .single();
 
           setIsAdmin(profile?.role === 'admin');

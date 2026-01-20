@@ -1,26 +1,9 @@
-import { createClient } from '@/lib/supabase/client';
+import { getAuthHeaders } from '@/lib/supabase/auth-helpers';
 import { API_BASE_URL } from '@/lib/config/api';
 
 const API_URL = API_BASE_URL;
 
-/**
- * Get authentication headers with JWT token
- */
-async function getAuthHeaders(): Promise<HeadersInit> {
-  const supabase = createClient();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
 
-  if (!session?.access_token) {
-    throw new Error('Not authenticated');
-  }
-
-  return {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${session.access_token}`,
-  };
-}
 
 /**
  * Homepage Section Configuration Types
@@ -129,7 +112,7 @@ export interface CreateHomepageSectionInput {
   config: HomepageSectionConfig;
 }
 
-export interface UpdateHomepageSectionInput extends Partial<CreateHomepageSectionInput> {}
+export interface UpdateHomepageSectionInput extends Partial<CreateHomepageSectionInput> { }
 
 export interface ReorderHomepageSectionsInput {
   ids: string[];
@@ -156,9 +139,8 @@ export const homepageSectionsApi = {
       });
     }
 
-    const url = `${API_URL}/admin/homepage-sections${
-      params.toString() ? `?${params.toString()}` : ''
-    }`;
+    const url = `${API_URL}/admin/homepage-sections${params.toString() ? `?${params.toString()}` : ''
+      }`;
     const response = await fetch(url, { headers });
 
     if (!response.ok) {
