@@ -5,8 +5,13 @@ import { toast } from 'sonner';
 /**
  * Build order confirmation message for Messenger
  */
-export function buildOrderConfirmationMessage(orderNumber: string): string {
-  return `Xin chào! Tôi vừa đặt đơn hàng.\nMã đơn hàng: ${orderNumber}\n\nVui lòng xác nhận đơn hàng cho tôi. Cảm ơn!`;
+import { formatCurrency } from "@/lib/utils";
+
+/**
+ * Build order confirmation message for Messenger
+ */
+export function buildOrderConfirmationMessage(orderNumber: string, totalAmount: number): string {
+  return `Xin chào! Tôi vừa đặt đơn hàng.\nMã đơn hàng: ${orderNumber}\nTổng tiền: ${formatCurrency(totalAmount)}\n\nVui lòng xác nhận đơn hàng cho tôi. Cảm ơn!`;
 }
 
 /**

@@ -284,15 +284,10 @@ export function QuickCart({ customTrigger }: { customTrigger?: boolean }) {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 gap-3">
                             <Link href="/cart" onClick={() => setOpen(false)} className="col-span-1">
-                                <Button variant="outline" className="w-full h-11 border-gray-300 hover:bg-gray-50 hover:text-gray-900">
-                                    Xem giỏ hàng
-                                </Button>
-                            </Link>
-                            <Link href="/checkout" onClick={() => setOpen(false)} className="col-span-1">
                                 <Button className="w-full h-11 bg-primary hover:bg-primary/90 text-white shadow-sm">
-                                    Thanh toán
+                                    Xem giỏ hàng
                                 </Button>
                             </Link>
                         </div>

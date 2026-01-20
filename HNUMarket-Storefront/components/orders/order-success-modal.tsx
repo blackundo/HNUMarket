@@ -12,6 +12,7 @@ import {
 interface OrderSuccessModalProps {
   orderId: string;
   orderNumber: string;
+  totalAmount: number;
   messengerPageId?: string;
   onClose: () => void;
 }
@@ -19,6 +20,7 @@ interface OrderSuccessModalProps {
 export function OrderSuccessModal({
   orderId,
   orderNumber,
+  totalAmount,
   messengerPageId,
   onClose,
 }: OrderSuccessModalProps) {
@@ -39,7 +41,7 @@ export function OrderSuccessModal({
     // Open messenger with order number message
     if (messengerPageId) {
       openMessengerWithMessage(
-        buildOrderConfirmationMessage(orderNumber),
+        buildOrderConfirmationMessage(orderNumber, totalAmount),
         messengerPageId
       );
     }

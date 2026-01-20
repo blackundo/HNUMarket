@@ -42,7 +42,7 @@ export function CartSummary() {
   const [messengerPageId, setMessengerPageId] = useState<string>("");
   const [checkoutNotes, setCheckoutNotes] = useState<string[]>([]);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [createdOrder, setCreatedOrder] = useState<{ id: string; orderNumber: string } | null>(null);
+  const [createdOrder, setCreatedOrder] = useState<{ id: string; orderNumber: string; totalAmount: number } | null>(null);
 
   // Request deduplication - prevent double-clicks
   const checkoutInProgressRef = useRef(false);
@@ -243,12 +243,13 @@ export function CartSummary() {
       setCreatedOrder({
         id: order.id,
         orderNumber: order.orderNumber,
+        totalAmount: summary.total,
       });
 
       // Open messenger with order number message
       if (messengerPageId) {
         openMessengerWithMessage(
-          buildOrderConfirmationMessage(order.orderNumber),
+          buildOrderConfirmationMessage(order.orderNumber, summary.total),
           messengerPageId
         );
       }
@@ -454,6 +455,7 @@ export function CartSummary() {
         <OrderSuccessModal
           orderId={createdOrder.id}
           orderNumber={createdOrder.orderNumber}
+          totalAmount={createdOrder.totalAmount}
           messengerPageId={messengerPageId}
           onClose={() => {
             setShowSuccessModal(false);
