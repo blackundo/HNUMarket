@@ -14,7 +14,6 @@ const nextConfig: NextConfig = {
         hostname: "**",
       },
     ],
-    // unoptimized: true, // Enable this if sharp still causes issues
   },
 };
 
