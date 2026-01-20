@@ -12,3 +12,4 @@
 docker-compose.override.yml
 # HNUMarket-Storefront/package-lock.json
 # HNUMarket-Backend/package-lock.json
+rclone.conf

@@ -1,5 +1,6 @@
 import { Injectable, BadRequestException, Logger } from '@nestjs/common';
 import { R2StorageService } from '../common/storage/r2-storage.service';
+import * as sharp from 'sharp';
 
 /**
  * Upload Service
@@ -23,7 +24,7 @@ export class UploadService {
    * Upload single file to R2 Storage
    *
    * @param file - Multer file object
-   * @returns Path of uploaded file (e.g., 'uploads/uuid.jpg')
+   * @returns Path of uploaded file (e.g., 'uploads/uuid.webp')
    * @throws BadRequestException if validation fails
    */
   async uploadFile(file: Express.Multer.File): Promise<string> {
@@ -40,14 +41,29 @@ export class UploadService {
     }
 
     try {
+      // Optmize image with Sharp
+      const optimizedBuffer = await sharp(file.buffer)
+        .resize(1920, 1920, {
+          fit: 'inside',
+          withoutEnlargement: true,
+        })
+        .webp({ quality: 80 })
+        .toBuffer();
+
+      // Change extension and mimetype to webp
+      // Replace extension or append if none
+      const originalNameWithoutExt = file.originalname.replace(/\.[^/.]+$/, '');
+      const newFilename = `${originalNameWithoutExt}.webp`;
+      const newMimeType = 'image/webp';
+
       const url = await this.r2Storage.uploadFile(
-        file.buffer,
-        file.originalname,
-        file.mimetype,
+        optimizedBuffer,
+        newFilename,
+        newMimeType,
         'uploads',
       );
 
-      this.logger.log(`File uploaded: ${file.originalname}`);
+      this.logger.log(`File uploaded and optimized: ${newFilename}`);
       return url;
     } catch (error) {
       this.logger.error(`Upload failed: ${error.message}`);
