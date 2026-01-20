@@ -8,6 +8,7 @@ import { formatCurrency, calculateDiscount } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Package, Minus, Plus, ShoppingCart, Eye, Heart } from "lucide-react";
 import { useCart } from "@/contexts/cart-context";
+import { useWishlist } from "@/contexts/wishlist-context";
 import { useState, useMemo, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { QuickViewModal } from "./quick-view-modal";
@@ -21,7 +22,11 @@ interface ProductCardProps {
 
 export function ProductCard({ product, is_slider = false }: ProductCardProps) {
   const { addItem, updateQuantity, getItemQuantity } = useCart();
+  const { isInWishlist, toggleItem: toggleWishlist } = useWishlist();
   const isMobile = useMediaQuery("(max-width: 767px)");
+
+  // Wishlist state
+  const isWishlisted = isInWishlist(product.id);
 
   // Sort variants by conversionRate to get smallest unit first (goi = 1)
   // Filter out inactive variants (if isActive field exists)
@@ -324,12 +329,28 @@ export function ProductCard({ product, is_slider = false }: ProductCardProps) {
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              toast.success("Đã thêm vào yêu thích");
+              const added = toggleWishlist(product.id);
+              if (added) {
+                toast.success("Đã thêm vào yêu thích", {
+                  description: "Xem danh sách yêu thích của bạn.",
+                  action: {
+                    label: "Xem",
+                    onClick: () => window.location.href = "/wishlist",
+                  },
+                });
+              } else {
+                toast.success("Đã xóa khỏi yêu thích");
+              }
             }}
-            className="w-8 h-8 rounded-full border border-dashed border-white flex items-center justify-center text-white hover:bg-white hover:text-primary transition-all duration-200"
-            aria-label="Thêm vào yêu thích"
+            className={cn(
+              "w-8 h-8 rounded-full border flex items-center justify-center transition-all duration-200",
+              isWishlisted
+                ? "bg-white text-rose-500 border-white"
+                : "border-dashed border-white text-white hover:bg-white hover:text-primary"
+            )}
+            aria-label={isWishlisted ? "Xóa khỏi yêu thích" : "Thêm vào yêu thích"}
           >
-            <Heart className="w-4 h-4" />
+            <Heart className={cn("w-4 h-4", isWishlisted && "fill-rose-500")} />
           </button>
 
           <button

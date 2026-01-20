@@ -1,21 +1,37 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Heart, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MobileMenu } from "@/components/layout/mobile-menu";
 import { SearchInput } from "@/components/search/search-input";
 import { useAuth } from "@/contexts/auth-context";
+import { useWishlist } from "@/contexts/wishlist-context";
 import { UserMenu } from "@/components/auth/user-menu";
 import { QuickCart } from "@/components/cart/quick-cart";
 import { useMounted } from "@/hooks/use-mounted";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 export function Navbar() {
   const { user, logout } = useAuth();
+  const { itemCount: wishlistCount } = useWishlist();
   const mounted = useMounted();
+  const [isScrolled, setIsScrolled] = useState(false);
 
+  // Handle scroll event
+  useEffect(() => {
+    const handleScroll = () => {
+      // Trigger sticky after scrolling past top bars (approximately 80px)
+      setIsScrolled(window.scrollY > 80);
+    };
 
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Check initial scroll position
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   return (
     <header className="w-full z-40">
       {/* 1. Top Green Promotion Bar */}
@@ -49,8 +65,15 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* 3. Main Header (Logo, Search, Actions) */}
-      <div className="bg-white py-6 px-4">
+      {/* 3. Main Header (Logo, Search, Actions) - Sticky */}
+      <div
+        className={cn(
+          "bg-white px-4 transition-all duration-300",
+          isScrolled
+            ? "fixed top-0 left-0 right-0 z-50 py-3 shadow-md"
+            : "py-6"
+        )}
+      >
         <div className="max-w-screen mx-auto flex items-center justify-between gap-4 sm:gap-8">
           {/* Logo */}
           <Link href="/" className="flex-shrink-0 flex items-center gap-2">
@@ -71,7 +94,11 @@ export function Navbar() {
               <Button variant="outline" className={`hidden sm:flex h-12 gap-2 border-gray-200 rounded-sm hover:border-primary hover:text-accent-foreground group`}>
                 <div className="relative">
                   <Heart className="w-5 h-5" />
-                  <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">0</span>
+                  {wishlistCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                      {wishlistCount > 99 ? "99+" : wishlistCount}
+                    </span>
+                  )}
                 </div>
                 <span className="hidden lg:inline text-sm font-semibold text-gray-700 group-hover:text-accent-foreground">Yêu thích</span>
               </Button>
@@ -107,10 +134,13 @@ export function Navbar() {
         </div>
 
         {/* Mobile Search */}
-        <div className="md:hidden mt-4">
+        <div className={cn("md:hidden mt-4", isScrolled && "hidden")}>
           <SearchInput />
         </div>
       </div>
+
+      {/* Spacer when navbar is fixed */}
+      {isScrolled && <div className="h-[72px] md:h-[60px]" />}
 
       {/* 4. Navigation Menu Bar */}
       <div className="bg-gray-100 border-t border-b border-gray-200 hidden md:block">

@@ -3,12 +3,13 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Menu, Package, Smartphone, Laptop, ShirtIcon, Home, Sparkles, Dumbbell, Baby, User, LogOut, Settings, ShoppingBag } from "lucide-react";
+import { Menu, Package, Smartphone, Laptop, ShirtIcon, Home, Sparkles, Dumbbell, Baby, User, LogOut, Settings, ShoppingBag, Heart } from "lucide-react";
 import { storefrontCategoriesApi, type StorefrontCategory } from "@/lib/api/storefront-categories";
 import { createClient } from "@/lib/supabase/client";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { useWishlist } from "@/contexts/wishlist-context";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 const categoryIcons = {
@@ -30,6 +31,7 @@ export function MobileMenu() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const { itemCount: wishlistCount } = useWishlist();
 
   // Fetch user and categories
   useEffect(() => {
@@ -144,6 +146,23 @@ export function MobileMenu() {
               >
                 <Home className="h-4 w-4 text-muted-foreground" />
                 <span>Trang chủ</span>
+              </Link>
+
+              {/* Wishlist */}
+              <Link
+                href="/wishlist"
+                onClick={closeMenu}
+                className="flex items-center gap-3 px-3 py-2 text-sm rounded-lg hover:bg-accent transition-colors"
+              >
+                <div className="relative">
+                  <Heart className="h-4 w-4 text-muted-foreground" />
+                  {wishlistCount > 0 && (
+                    <span className="absolute -top-1 -right-2 bg-primary text-white text-[8px] w-3.5 h-3.5 flex items-center justify-center rounded-full">
+                      {wishlistCount > 9 ? "9+" : wishlistCount}
+                    </span>
+                  )}
+                </div>
+                <span>Yêu thích</span>
               </Link>
 
               {/* User Menu Items */}

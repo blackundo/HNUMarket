@@ -4,6 +4,7 @@ import { Montserrat, Poppins, Open_Sans } from "next/font/google";
 import { ConditionalLayout } from "@/components/layout/conditional-layout";
 import { AuthProvider } from "@/contexts/auth-context";
 import { CartProvider } from "@/contexts/cart-context";
+import { WishlistProvider } from "@/contexts/wishlist-context";
 import { MobileCartDrawerProvider } from "@/contexts/mobile-cart-drawer-provider";
 import { MobileCartDrawer } from "@/components/product/mobile-cart-drawer";
 import { MobileCartBar } from "@/components/product/mobile-cart-bar";
@@ -86,13 +87,15 @@ export default function RootLayout({
         </Suspense>
         <NuqsAdapter>
           <AuthProvider>
-            <CartProvider>
-              <MobileCartDrawerProvider>
-                <ConditionalLayout>{children}</ConditionalLayout>
-                <MobileCartDrawer />
-                <MobileCartBar />
-              </MobileCartDrawerProvider>
-            </CartProvider>
+            <WishlistProvider>
+              <CartProvider>
+                <MobileCartDrawerProvider>
+                  <ConditionalLayout>{children}</ConditionalLayout>
+                  <MobileCartDrawer />
+                  <MobileCartBar />
+                </MobileCartDrawerProvider>
+              </CartProvider>
+            </WishlistProvider>
           </AuthProvider>
         </NuqsAdapter>
       </body>
