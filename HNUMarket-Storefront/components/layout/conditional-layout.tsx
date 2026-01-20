@@ -9,13 +9,14 @@ import { Toaster } from 'sonner';
 export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdminRoute = pathname?.startsWith('/admin');
+  const isAuthRoute = pathname?.startsWith('/auth');
 
   return (
     <>
-      {!isAdminRoute && <Navbar />}
+      {!isAdminRoute && !isAuthRoute && <Navbar />}
       <main className="min-h-screen">{children}</main>
-      {!isAdminRoute && <PolicyBanner />}
-      {!isAdminRoute && <Footer />}
+      {!isAdminRoute && !isAuthRoute && <PolicyBanner />}
+      {!isAdminRoute && !isAuthRoute && <Footer />}
       {!isAdminRoute && (
         <Toaster position="top-right" richColors offset={{ top: 100 }} />
       )}

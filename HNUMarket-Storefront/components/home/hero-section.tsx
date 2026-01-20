@@ -34,8 +34,8 @@ export function HeroSection({ categories }: HeroSectionProps) {
         <section className="bg-gray-200 py-4 sm:py-6">
             <div className="max-w-screen mx-auto px-4">
                 <div className="flex gap-4">
-                    {/* Categories Sidebar - Desktop only (lg+), collapsible */}
-                    <div className="hidden lg:block flex-shrink-0 w-[280px]">
+                    {/* Categories Sidebar - Desktop only (lg+), 20% width */}
+                    <div className="hidden lg:block w-1/5">
                         <CategoriesSidebar
                             categories={categories}
                             isOpen={isSidebarOpen}
@@ -44,8 +44,8 @@ export function HeroSection({ categories }: HeroSectionProps) {
                         />
                     </div>
 
-                    {/* Hero Slider - Full width on mobile, takes remaining space on desktop */}
-                    <div className="flex-1 min-w-0 w-full">
+                    {/* Hero Slider - Full width on mobile, 80% on desktop */}
+                    <div className="w-full lg:w-4/5">
                         <HeroSlider />
                     </div>
                 </div>

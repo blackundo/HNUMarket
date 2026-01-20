@@ -3,11 +3,10 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { LogIn, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { LogIn, AlertCircle, CheckCircle2, ShoppingBag, Loader2 } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
 function LoginForm() {
   const router = useRouter();
@@ -18,6 +17,7 @@ function LoginForm() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showResendButton, setShowResendButton] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const error = searchParams.get('error');
@@ -27,12 +27,10 @@ function LoginForm() {
     // Handle error messages
     if (error && message) {
       setErrorMessage(message);
-      // Show resend button for email-related errors
       if (error === 'email_link_expired' || error === 'verification_failed' || error === 'email_confirmation_failed') {
         setShowResendButton(true);
       }
     } else if (error) {
-      // Fallback error messages if no specific message provided
       switch (error) {
         case 'email_link_expired':
           setErrorMessage('Link xác nhận đã hết hạn. Vui lòng đăng ký lại hoặc yêu cầu gửi lại email xác nhận.');
@@ -73,8 +71,12 @@ function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
+    setErrorMessage(null);
 
     const success = await login(email, password);
+    setIsLoading(false);
+
     if (success) {
       router.push('/');
     }
@@ -86,7 +88,10 @@ function LoginForm() {
       return;
     }
 
+    setIsLoading(true);
     const success = await resendConfirmationEmail(email);
+    setIsLoading(false);
+
     if (success) {
       setSuccessMessage('Đã gửi lại email xác nhận. Vui lòng kiểm tra hộp thư của bạn.');
       setErrorMessage(null);
@@ -95,95 +100,189 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 sm:py-16">
-      <div className="max-w-md mx-auto px-4 sm:px-6">
-        <Card>
-          <CardHeader className="space-y-1">
-            <div className="flex items-center justify-center mb-4">
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                <LogIn className="w-6 h-6 text-primary" />
-              </div>
+    <div className="min-h-screen bg-slate-50 flex">
+      {/* Left Side - Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-12">
+        <div className="w-full max-w-md">
+          {/* Logo/Brand */}
+          <Link href="/" className="inline-flex items-center gap-2 mb-8 group">
+            <div className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center group-hover:bg-blue-600 transition-colors">
+              <ShoppingBag className="w-5 h-5 text-white" />
             </div>
-            <CardTitle className="text-2xl text-center">Đăng nhập</CardTitle>
-            <CardDescription className="text-center">
-              Nhập email và mật khẩu để đăng nhập
-            </CardDescription>
-          </CardHeader>
-          <form onSubmit={handleSubmit}>
-            <CardContent className="space-y-4">
-              {successMessage && (
-                <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md flex items-start gap-2">
-                  <CheckCircle2 className="w-5 h-5 mt-0.5 flex-shrink-0" />
-                  <p className="text-sm">{successMessage}</p>
-                </div>
-              )}
-              {errorMessage && (
-                <div className="space-y-2">
-                  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md flex items-start gap-2">
-                    <AlertCircle className="w-5 h-5 mt-0.5 flex-shrink-0" />
-                    <p className="text-sm">{errorMessage}</p>
-                  </div>
-                  {showResendButton && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={handleResendConfirmation}
-                      className="w-full"
-                    >
-                      Gửi lại email xác nhận
-                    </Button>
-                  )}
-                </div>
-              )}
-              <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-medium">
-                  Email
-                </label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="example@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
+            <span className="text-xl font-semibold text-slate-900">HNUMarket</span>
+          </Link>
+
+          {/* Welcome Text */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-slate-900 mb-2">Chào mừng trở lại</h1>
+            <p className="text-slate-600">Đăng nhập để tiếp tục mua sắm</p>
+          </div>
+
+          {/* Success/Error Messages */}
+          {successMessage && (
+            <div className="mb-6 bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-lg flex items-start gap-3">
+              <CheckCircle2 className="w-5 h-5 mt-0.5 flex-shrink-0" />
+              <p className="text-sm">{successMessage}</p>
+            </div>
+          )}
+          {errorMessage && (
+            <div className="mb-6 space-y-3">
+              <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 mt-0.5 flex-shrink-0" />
+                <p className="text-sm">{errorMessage}</p>
               </div>
-              <div className="space-y-2">
-                <label htmlFor="password" className="text-sm font-medium">
+              {showResendButton && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleResendConfirmation}
+                  disabled={isLoading}
+                  className="w-full"
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Đang gửi...
+                    </>
+                  ) : (
+                    'Gửi lại email xác nhận'
+                  )}
+                </Button>
+              )}
+            </div>
+          )}
+
+          {/* Login Form */}
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-2">
+              <label htmlFor="email" className="block text-sm font-medium text-slate-700">
+                Email
+              </label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="example@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                disabled={isLoading}
+                className="h-11 bg-white border-slate-200 focus:border-blue-500 focus:ring-blue-500"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label htmlFor="password" className="block text-sm font-medium text-slate-700">
                   Mật khẩu
                 </label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="flex justify-end">
                 <Link
                   href="/auth/forgot-password"
-                  className="text-sm text-primary hover:underline"
+                  className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
                 >
                   Quên mật khẩu?
                 </Link>
               </div>
-            </CardContent>
-            <CardFooter className="flex flex-col space-y-4">
-              <Button type="submit" className="w-full">
-                Đăng nhập
-              </Button>
-              <p className="text-sm text-center text-gray-600">
-                Chưa có tài khoản?{' '}
-                <Link href="/auth/register" className="text-primary hover:underline">
-                  Đăng ký
-                </Link>
-              </p>
-            </CardFooter>
+              <Input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                disabled={isLoading}
+                className="h-11 bg-white border-slate-200 focus:border-blue-500 focus:ring-blue-500"
+              />
+            </div>
+
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="w-full h-11 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-medium transition-all duration-200"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Đang đăng nhập...
+                </>
+              ) : (
+                <>
+                  <LogIn className="w-4 h-4 mr-2" />
+                  Đăng nhập
+                </>
+              )}
+            </Button>
           </form>
-        </Card>
+
+          {/* Register Link */}
+          <div className="mt-8 text-center">
+            <p className="text-sm text-slate-600">
+              Chưa có tài khoản?{' '}
+              <Link
+                href="/auth/register"
+                className="font-medium text-blue-600 hover:text-blue-700 transition-colors"
+              >
+                Đăng ký ngay
+              </Link>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Side - Brand Visual */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 via-blue-500 to-blue-400 relative overflow-hidden">
+        {/* Decorative Elements */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-20 right-20 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 left-20 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+        </div>
+
+        {/* Content */}
+        <div className="relative z-10 flex flex-col justify-center px-16 text-white">
+          <div className="mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl mb-6">
+              <ShoppingBag className="w-8 h-8 text-white" />
+            </div>
+            <h2 className="text-4xl font-bold mb-4">
+              Mua sắm thông minh,<br />
+              Giao hàng nhanh chóng
+            </h2>
+            <p className="text-lg text-blue-50">
+              Khám phá hàng ngàn sản phẩm chất lượng với giá tốt nhất tại HNUMarket
+            </p>
+          </div>
+
+          {/* Features */}
+          <div className="space-y-4">
+            <div className="flex items-start gap-3">
+              <div className="w-6 h-6 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                <CheckCircle2 className="w-4 h-4 text-white" />
+              </div>
+              <div>
+                <h3 className="font-semibold mb-1">Sản phẩm chính hãng</h3>
+                <p className="text-sm text-blue-50">100% cam kết hàng thật, nguồn gốc rõ ràng</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-6 h-6 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                <CheckCircle2 className="w-4 h-4 text-white" />
+              </div>
+              <div>
+                <h3 className="font-semibold mb-1">Giao hàng tận nơi</h3>
+                <p className="text-sm text-blue-50">Miễn phí vận chuyển cho đơn hàng từ 500k</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-6 h-6 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                <CheckCircle2 className="w-4 h-4 text-white" />
+              </div>
+              <div>
+                <h3 className="font-semibold mb-1">Hỗ trợ 24/7</h3>
+                <p className="text-sm text-blue-50">Đội ngũ chăm sóc khách hàng luôn sẵn sàng</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -192,13 +291,10 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 py-12 sm:py-16">
-        <div className="max-w-md mx-auto px-4 sm:px-6">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center">Đang tải...</div>
-            </CardContent>
-          </Card>
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-4" />
+          <p className="text-slate-600">Đang tải...</p>
         </div>
       </div>
     }>

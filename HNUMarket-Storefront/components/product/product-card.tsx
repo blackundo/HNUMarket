@@ -6,7 +6,7 @@ import { Product, ProductVariant } from "@/types";
 import { findVariantByAttributes, ProductVariantNormalized } from "@/types/product-variants";
 import { formatCurrency, calculateDiscount } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { Package, Minus, Plus, ShoppingCart, Eye } from "lucide-react";
+import { Package, Minus, Plus, ShoppingCart, Eye, Heart } from "lucide-react";
 import { useCart } from "@/contexts/cart-context";
 import { useState, useMemo, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
@@ -317,19 +317,34 @@ export function ProductCard({ product, is_slider = false }: ProductCardProps) {
           </div>
         )}
 
-        {/* Quick View Button - Shows on hover (Desktop only, hidden on mobile via CSS to avoid hydration mismatch) */}
-        <button
-          type="button"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setIsQuickViewOpen(true);
-          }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/50 backdrop-blur-sm hover:bg-white/90 shadow-lg hover:shadow-xl rounded-full p-3 hidden md:block"
-          aria-label="Xem nhanh sản phẩm"
-        >
-          <Eye className="w-5 h-5 text-gray-700" />
-        </button>
+        {/* Action Buttons Overlay - Shows on hover */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-primary/95 backdrop-blur-sm px-4 py-2 rounded-t-xl opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 z-20 hidden md:flex">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              toast.success("Đã thêm vào yêu thích");
+            }}
+            className="w-8 h-8 rounded-full border border-dashed border-white flex items-center justify-center text-white hover:bg-white hover:text-primary transition-all duration-200"
+            aria-label="Thêm vào yêu thích"
+          >
+            <Heart className="w-4 h-4" />
+          </button>
+
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsQuickViewOpen(true);
+            }}
+            className="w-8 h-8 rounded-full border border-dashed border-white flex items-center justify-center text-white hover:bg-white hover:text-primary transition-all duration-200"
+            aria-label="Xem nhanh sản phẩm"
+          >
+            <Eye className="w-4 h-4" />
+          </button>
+        </div>
 
         {/* Badges */}
         {product.badges && product.badges.length > 0 && (

@@ -30,7 +30,7 @@ export function HomepageSection({ section }: HomepageSectionProps) {
 
   return (
     <section className="py-6 sm:py-8">
-      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-screen mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         {display.show_category_header && (
           <div className="flex items-center justify-between mb-3 sm:mb-4">

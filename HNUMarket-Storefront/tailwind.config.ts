@@ -84,21 +84,21 @@ export default {
   		},
   		fontFamily: {
   			sans: [
-  				'Montserrat',
+  				'var(--font-montserrat)',
   				'ui-sans-serif',
   				'system-ui'
   			],
   			body: [
-  				'Source Sans Pro',
+  				'var(--font-open-sans)',
   				'ui-sans-serif',
   				'system-ui'
   			],
   			heading: [
-  				'Poppins',
+  				'var(--font-poppins)',
   				'sans-serif'
   			],
   			admin: [
-  				'Open Sans',
+  				'var(--font-open-sans)',
   				'sans-serif'
   			]
   		},

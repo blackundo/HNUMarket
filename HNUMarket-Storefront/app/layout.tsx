@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Montserrat } from "next/font/google";
+import { Montserrat, Poppins, Open_Sans } from "next/font/google";
 import { ConditionalLayout } from "@/components/layout/conditional-layout";
 import { AuthProvider } from "@/contexts/auth-context";
 import { CartProvider } from "@/contexts/cart-context";
@@ -14,6 +14,18 @@ import "./globals.css";
 const montserrat = Montserrat({
   subsets: ["latin", "vietnamese"],
   variable: "--font-montserrat",
+});
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-poppins",
+});
+
+const openSans = Open_Sans({
+  subsets: ["latin", "vietnamese"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-open-sans",
 });
 
 export const metadata: Metadata = {
@@ -67,7 +79,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi">
-      <body className={`${montserrat.variable} font-sans antialiased`}>
+      <body className={`${montserrat.variable} ${poppins.variable} ${openSans.variable} font-sans antialiased`}>
         <GoogleAnalytics />
         <Suspense fallback={null}>
           <GAPageView />

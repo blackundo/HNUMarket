@@ -51,7 +51,7 @@ export default async function Home() {
       {/* Flash Sale */}
       {flashSaleProducts.length > 0 && (
         <section className="py-8 sm:py-12">
-          <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-screen mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between mb-4 sm:mb-6">
               <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold flex items-center gap-2">
                 <Zap className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 fill-yellow-400 text-yellow-400" />
@@ -73,7 +73,7 @@ export default async function Home() {
       {/* Featured Products */}
       {featuredProducts.length > 0 && (
         <section className="py-8 sm:py-12 bg-gray-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-screen mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-4 sm:mb-6">Sản Phẩm Nổi Bật</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-3 sm:gap-4">
               {featuredProducts.map((product) => (

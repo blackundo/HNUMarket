@@ -4,7 +4,7 @@ import { Flame, Undo2, Headphones, Sparkles } from "lucide-react";
 
 export function PolicyBanner() {
     return (
-        <div className="bg-primary py-20 mt-12 sm:mt-16 relative z-10 w-full">
+        <div className="bg-primary py-20 relative z-10 w-full">
             <div className="max-w-screen mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {/* Item 1 */}
