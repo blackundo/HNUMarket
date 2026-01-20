@@ -55,6 +55,7 @@ export function PostForm({ post }: PostFormProps) {
     setUploading(true);
     try {
       const { url } = await uploadApi.uploadFile(file);
+      // Store path only, not full URL - getImageUrl is used for display
       setCoverImage(url);
     } catch (error) {
       console.error('Upload failed:', error);

@@ -22,6 +22,7 @@ import {
 } from '@/types/ai-image-generation';
 import { uploadApi } from '@/lib/api/products';
 import { cn } from '@/lib/utils';
+import { getImageUrl } from '@/lib/image';
 
 interface AIImageGeneratorModalProps {
   isOpen: boolean;
@@ -128,7 +129,7 @@ export function AIImageGeneratorModal({
         `ai-generated-${Date.now()}.jpg`
       );
       const result = await uploadApi.uploadFile(file);
-      onImageSaved(result.url);
+      onImageSaved(result.url); // Store path only
       onClose();
     } catch (error) {
       setState((s) => ({

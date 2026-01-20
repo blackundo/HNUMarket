@@ -139,6 +139,7 @@ export function HeroSlideForm({ heroSlide, mode }: HeroSlideFormProps) {
 
             try {
                 const { url } = await uploadApi.uploadFile(file);
+                // Store path only, not full URL - getImageUrl is used for display
                 setImageUrl(url);
                 setValue('imageUrl', url);
             } catch (err) {

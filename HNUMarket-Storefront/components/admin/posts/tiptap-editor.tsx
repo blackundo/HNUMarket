@@ -22,6 +22,7 @@ import Superscript from '@tiptap/extension-superscript';
 import { uploadApi } from '@/lib/api/products';
 import { generateText } from '@/lib/services/ai-text-generation';
 import { toast } from 'sonner';
+import { getImageUrl } from '@/lib/image';
 import {
   Bold,
   Italic,
@@ -193,7 +194,7 @@ export const TipTapEditor = forwardRef<TipTapEditorRef, TipTapEditorProps>(
 
         try {
           const { url } = await uploadApi.uploadFile(file);
-          editor.chain().focus().setImage({ src: url }).run();
+          editor.chain().focus().setImage({ src: getImageUrl(url) }).run();
         } catch (error) {
           console.error('Failed to upload image:', error);
           toast.error('Không thể tải ảnh lên');

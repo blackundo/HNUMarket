@@ -20,6 +20,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { Upload, Eye, Edit2, Trash2, GripVertical } from 'lucide-react';
 import { ImagePreviewModal } from './image-preview-modal';
+import { getImageUrl } from '@/lib/image';
 
 export interface ImageData {
   url: string;
@@ -75,7 +76,7 @@ function SortableImageItem({
     >
       {/* Image */}
       <img
-        src={image.url}
+        src={getImageUrl(image.url)}
         alt={image.alt_text || `Product image ${index + 1}`}
         className="w-full h-full object-cover"
       />

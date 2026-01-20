@@ -7,7 +7,7 @@ export const createCategorySchema = z.object({
   name: z.string().min(1, 'Tên danh mục là bắt buộc').max(255),
   slug: z.string().min(1, 'Slug là bắt buộc').max(255).regex(/^[a-z0-9-]+$/, 'Slug chỉ được chứa chữ thường, số và dấu gạch ngang'),
   description: z.string().optional(),
-  image_url: z.string().url('URL hình ảnh không hợp lệ').optional().or(z.literal('')),
+  image_url: z.string().optional().or(z.literal('')),
   parent_id: z.string().uuid('ID danh mục cha không hợp lệ').nullable().optional(),
   display_order: z.number().int().min(0, 'Thứ tự hiển thị phải >= 0'),
   is_active: z.boolean(),

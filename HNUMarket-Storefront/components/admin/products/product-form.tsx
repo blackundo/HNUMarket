@@ -32,6 +32,7 @@ import { createProductSchema, type CreateProductInput } from '@/lib/validations/
 import { productsApi, uploadApi, type Product } from '@/lib/api/products';
 import { storefrontCategoriesApi, type StorefrontCategory } from '@/lib/api/storefront-categories';
 import { generateProductContent } from '@/lib/services';
+import { getImageUrl } from '@/lib/image';
 import { TipTapEditor, type TipTapEditorRef } from '@/components/admin/posts/tiptap-editor';
 import { ProductImageGallery, type ImageData } from '@/components/admin/products/product-image-gallery';
 import { AIImageGeneratorModal } from '@/components/admin/products/ai-image-generator-modal';
@@ -72,7 +73,6 @@ import {
   ImagePlus,
 } from 'lucide-react';
 import Link from 'next/link';
-import { getImageUrl } from '@/lib/image';
 
 interface ProductFormProps {
   product?: Product;
@@ -679,7 +679,7 @@ export function ProductForm({ product, mode }: ProductFormProps) {
       const results = await Promise.all(uploadPromises);
 
       const newImages = results.map((result, index) => ({
-        url: result.url,
+        url: result.url, // Store path only, not full URL - getImageUrl is for display only
         alt_text: files[index].name,
         display_order: images.length + index,
       }));
@@ -943,7 +943,7 @@ export function ProductForm({ product, mode }: ProductFormProps) {
       setVariantImageUploading(true);
       const result = await uploadApi.uploadFile(file);
       setVariantEditState((prev) =>
-        prev ? { ...prev, imageUrl: result.url } : prev,
+        prev ? { ...prev, imageUrl: result.url } : prev, // Store path only
       );
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Tải lên hình ảnh thất bại');
@@ -1934,7 +1934,7 @@ export function ProductForm({ product, mode }: ProductFormProps) {
                         : 'border-gray-200'
                         }`}
                     >
-                      <img src={image.url} alt="variant" className="h-full w-full object-cover" />
+                      <img src={getImageUrl(image.url)} alt="variant" className="h-full w-full object-cover" />
                     </button>
                   ))}
                   <label className="flex h-16 w-16 cursor-pointer items-center justify-center rounded-md border border-dashed border-gray-300 text-gray-500 hover:border-admin-primary hover:text-admin-primary">
@@ -1953,7 +1953,7 @@ export function ProductForm({ product, mode }: ProductFormProps) {
                 {variantEditState.imageUrl && (
                   <div className="mt-3 flex items-center gap-3 rounded-md border border-gray-200 p-3">
                     <img
-                      src={variantEditState.imageUrl}
+                      src={getImageUrl(variantEditState.imageUrl)}
                       alt="variant preview"
                       className="h-12 w-12 rounded-md object-cover"
                     />

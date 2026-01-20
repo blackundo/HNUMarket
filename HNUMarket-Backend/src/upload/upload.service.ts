@@ -23,7 +23,7 @@ export class UploadService {
    * Upload single file to R2 Storage
    *
    * @param file - Multer file object
-   * @returns Public URL of uploaded file
+   * @returns Path of uploaded file (e.g., 'uploads/uuid.jpg')
    * @throws BadRequestException if validation fails
    */
   async uploadFile(file: Express.Multer.File): Promise<string> {
@@ -58,7 +58,7 @@ export class UploadService {
   /**
    * Delete file from R2 Storage
    *
-   * @param url - Public URL of file to delete
+   * @param url - Path or full URL of file to delete
    */
   async deleteFile(url: string): Promise<void> {
     try {

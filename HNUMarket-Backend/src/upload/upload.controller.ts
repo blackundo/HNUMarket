@@ -34,6 +34,7 @@ export class UploadController {
    * POST /api/admin/upload/single
    * Content-Type: multipart/form-data
    * Body: { file: <file> }
+   * Response: { url: 'uploads/uuid.jpg' }
    */
   @Post('single')
   @UseInterceptors(FileInterceptor('file'))
@@ -50,6 +51,7 @@ export class UploadController {
    * POST /api/admin/upload/multiple
    * Content-Type: multipart/form-data
    * Body: { files: [<file1>, <file2>, ...] }
+   * Response: { urls: ['uploads/uuid1.jpg', 'uploads/uuid2.jpg'] }
    */
   @Post('multiple')
   @UseInterceptors(FilesInterceptor('files', 10))

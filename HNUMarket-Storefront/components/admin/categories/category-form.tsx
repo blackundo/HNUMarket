@@ -121,6 +121,7 @@ export function CategoryForm({ category, mode }: CategoryFormProps) {
         setUploadingImage(true);
         try {
             const { url } = await uploadApi.uploadFile(file);
+            // Store path only, not full URL - getImageUrl is used for display
             setImageUrl(url);
             setValue('image_url', url);
         } catch (err) {

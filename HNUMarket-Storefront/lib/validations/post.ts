@@ -14,7 +14,7 @@ export const postSchema = z.object({
   title: z.string().min(1, 'Title required').max(200),
   excerpt: z.string().max(500).optional(),
   content: z.string().optional(),
-  coverImageUrl: z.string().url().optional().or(z.literal('')),
+  coverImageUrl: z.string().optional().or(z.literal('')),
   category: z.string().optional(),
   tags: z.array(z.string()).optional(),
   status: postStatusEnum.optional(),

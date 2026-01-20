@@ -130,7 +130,7 @@ export function ImagePreviewModal({
         {mode === 'edit' ? (
           /* Image Editor Mode */
           <ImageEditor
-            imageUrl={imageUrl}
+            imageUrl={getImageUrl(imageUrl)}
             onSave={handleImageSave}
             onCancel={handleCancelEdit}
           />

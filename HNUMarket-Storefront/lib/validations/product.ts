@@ -74,11 +74,7 @@ export const productVariantNormalizedSchema = z.object({
   price: z.number().min(0, 'Price must be non-negative'),
   originalPrice: z.number().min(0, 'Original price must be non-negative').optional(),
   sku: z.string().optional(),
-  imageUrl: z
-    .string()
-    .url('Must be a valid URL')
-    .optional()
-    .or(z.literal('')),
+  imageUrl: z.string().optional().or(z.literal('')),
   isActive: z.boolean().optional(),
 }).refine(
   (data) => {
@@ -95,7 +91,7 @@ export const productVariantNormalizedSchema = z.object({
  * Product Image Schema
  */
 export const productImageSchema = z.object({
-  url: z.string().url('Must be a valid URL'),
+  url: z.string().min(1, 'Image URL is required'),
   alt_text: z.string().optional(),
   display_order: z.number().int().min(0).optional(),
 });
@@ -114,7 +110,7 @@ const createProductSchemaBase = z.object({
   sku: z.string().optional(),
   isActive: z.boolean().optional(),
   isFeatured: z.boolean().optional(),
-  imageUrls: z.array(z.string().url()).optional(),
+  imageUrls: z.array(z.string()).optional(),
   variants: z.array(productVariantSchema).optional(),
   options: z.array(productOptionSchema).optional(),
   variantsNormalized: z.array(productVariantNormalizedSchema).optional(),

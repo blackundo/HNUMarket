@@ -48,7 +48,7 @@ export class R2StorageService {
      * @param originalName - Original filename (for extension)
      * @param contentType - MIME type
      * @param folder - Optional folder path (e.g., 'uploads')
-     * @returns Public URL of uploaded file
+     * @returns Path of uploaded file (e.g., 'uploads/uuid.jpg')
      */
     async uploadFile(
         buffer: Buffer,
@@ -68,9 +68,8 @@ export class R2StorageService {
 
         try {
             await this.client.send(command);
-            const url = this.getPublicUrl(key);
             this.logger.log(`File uploaded: ${key}`);
-            return url;
+            return key;
         } catch (error) {
             this.logger.error(`Upload failed: ${error.message}`);
             throw error;

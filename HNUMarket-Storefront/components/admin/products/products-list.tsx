@@ -199,7 +199,7 @@ export function ProductsList() {
                             Thùng rác
                         </Button>
                     </Link>
-                    <Link href="/admin/products/new" target="_blank" rel="noopener noreferrer">
+                    <Link href="/admin/products/new" rel="noopener noreferrer">
                         <Button className="w-full bg-admin-primary text-white hover:bg-admin-primary/80 sm:w-auto">
                             <Plus className="h-4 w-4 mr-2" />
                             Thêm sản phẩm
