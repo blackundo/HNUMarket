@@ -6,6 +6,7 @@ import { X, Minus, Plus, Package } from "lucide-react";
 import { useCart, CartItemWithDetails } from "@/contexts/cart-context";
 import { useMobileCartDrawer } from "@/contexts/mobile-cart-drawer-provider";
 import { formatCurrency } from "@/lib/utils";
+import { getImageUrl } from "@/lib/image";
 import { Button } from "@/components/ui/button";
 import {
     Drawer,
@@ -123,7 +124,7 @@ export function MobileCartDrawer() {
                                         <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 relative">
                                             {item.product.images && item.product.images.length > 0 ? (
                                                 <Image
-                                                    src={item.product.images[0].url}
+                                                    src={getImageUrl(item.product.images[0].url)}
                                                     alt={item.product.images[0].alt_text || item.product.name}
                                                     fill
                                                     className="object-cover"

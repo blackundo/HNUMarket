@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Product, ProductVariant } from "@/types";
 import { findVariantByAttributes, ProductVariantNormalized } from "@/types/product-variants";
 import { formatCurrency, calculateDiscount } from "@/lib/utils";
+import { getImageUrl } from "@/lib/image";
 import { Badge } from "@/components/ui/badge";
 import { Package, Minus, Plus, ShoppingCart, Eye, Heart } from "lucide-react";
 import { useCart } from "@/contexts/cart-context";
@@ -292,9 +293,9 @@ export function ProductCard({ product, is_slider = false }: ProductCardProps) {
     if (!product.images || product.images.length === 0) return '';
     const firstImage = product.images[0] as any;
     // If string (legacy Product type)
-    if (typeof firstImage === 'string') return firstImage;
+    if (typeof firstImage === 'string') return getImageUrl(firstImage);
     // If object (ProductWithNormalizedVariants type)
-    if (typeof firstImage === 'object' && firstImage?.url) return firstImage.url;
+    if (typeof firstImage === 'object' && firstImage?.url) return getImageUrl(firstImage.url);
     return '';
   };
 

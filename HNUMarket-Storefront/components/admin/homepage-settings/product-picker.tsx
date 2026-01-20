@@ -27,6 +27,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { getImageUrl } from '@/lib/image';
 
 interface SortableProductCardProps {
   product: Product;
@@ -62,7 +63,7 @@ function SortableProductCard({ product, onRemove }: SortableProductCardProps) {
       </button>
 
       {imageUrl ? (
-        <img src={imageUrl} alt={product.name} className="w-12 h-12 rounded object-cover" />
+        <img src={getImageUrl(imageUrl)} alt={product.name} className="w-12 h-12 rounded object-cover" />
       ) : (
         <div className="w-12 h-12 rounded bg-muted flex items-center justify-center">
           <Package className="h-6 w-6 text-muted-foreground" />
@@ -242,7 +243,7 @@ export function ProductPicker({ categoryId, config, onChange }: ProductPickerPro
                     >
                       {imageUrl ? (
                         <img
-                          src={imageUrl}
+                          src={getImageUrl(imageUrl)}
                           alt={product.name}
                           className="w-10 h-10 rounded object-cover"
                         />

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { formatRelativeDate } from '@/lib/utils';
+import { getImageUrl } from '@/lib/image';
 import { Card } from '@/components/ui/card';
 import { Package, User, Calendar } from 'lucide-react';
 import { StorefrontPost } from '@/lib/api/storefront-posts';
@@ -20,7 +21,7 @@ export function BlogPostCard({ post }: BlogPostCardProps) {
         <div className="relative aspect-video bg-gray-100 overflow-hidden">
           {post.cover_image_url ? (
             <Image
-              src={post.cover_image_url}
+              src={getImageUrl(post.cover_image_url)}
               alt={post.title}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-300"

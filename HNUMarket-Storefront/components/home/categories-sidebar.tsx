@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ChevronDown, ChevronRight, Menu, Flame } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { getImageUrl } from '@/lib/image';
 
 interface Category {
     id: string;
@@ -59,7 +60,7 @@ export function CategoriesSidebar({
                 <div className="w-8 h-8 relative flex-shrink-0">
                     {category.image ? (
                         <Image
-                            src={category.image}
+                            src={getImageUrl(category.image)}
                             alt={category.name}
                             fill
                             className="object-contain"

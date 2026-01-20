@@ -2,6 +2,7 @@
 
 import { CartItemWithDetails, useCart } from "@/contexts/cart-context";
 import { formatCurrency } from "@/lib/utils";
+import { getImageUrl } from "@/lib/image";
 import { Package, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -20,12 +21,12 @@ export function CartItemRow({ item }: CartItemRowProps) {
   // Generate unique key based on attributes or variantId
   const itemKey = item.attributes
     ? `${item.productId}-${Object.entries(item.attributes)
-        .sort(([a], [b]) => a.localeCompare(b))
-        .map(([k, v]) => `${k}:${v}`)
-        .join('|')}`
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([k, v]) => `${k}:${v}`)
+      .join('|')}`
     : item.variantId
-    ? `${item.productId}-${item.variantId}`
-    : item.productId;
+      ? `${item.productId}-${item.variantId}`
+      : item.productId;
 
   const isSelected = selectedItems.has(itemKey);
 
@@ -62,7 +63,7 @@ export function CartItemRow({ item }: CartItemRowProps) {
           <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gray-100 rounded-lg overflow-hidden relative">
             {item.product.images && item.product.images.length > 0 ? (
               <Image
-                src={item.product.images[0].url}
+                src={getImageUrl(item.product.images[0].url)}
                 alt={item.product.images[0].alt_text || item.product.name}
                 fill
                 className="object-cover"

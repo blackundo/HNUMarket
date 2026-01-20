@@ -8,6 +8,7 @@ import { storefrontProductsApi } from "@/lib/api/storefront-products";
 import { transformProducts } from "@/lib/helpers/transform-api-data";
 import { Product } from "@/types";
 import { formatCurrency, cn } from "@/lib/utils";
+import { getImageUrl } from "@/lib/image";
 
 interface SearchInputProps {
   defaultValue?: string;
@@ -151,7 +152,7 @@ export function SearchInput({ defaultValue = "", onMobileClose, customClass }: S
                       {/* Product Image */}
                       <div className="w-10 h-10 bg-gray-100 rounded overflow-hidden flex-shrink-0 border border-gray-200">
                         <img
-                          src={product.images[0] || "/placeholder.jpg"}
+                          src={getImageUrl(product.images[0]) || "/placeholder.jpg"}
                           alt={product.name}
                           className="w-full h-full object-cover"
                         />

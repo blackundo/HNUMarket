@@ -9,6 +9,7 @@ import { storefrontProductsApi, StorefrontProduct } from '@/lib/api/storefront-p
 import { VariantSelector } from '@/components/product/variant-selector';
 import { useVariantSelection } from '@/hooks/use-variant-selection';
 import { formatCurrency } from '@/lib/format';
+import { getImageUrl as getImageUrlFromPath } from '@/lib/image';
 import Image from 'next/image';
 
 interface AddProductModalProps {
@@ -90,9 +91,8 @@ export function AddProductModal({ open, onClose, onAdd, adding = false }: AddPro
       return placeholderImage;
     }
 
-    // StorefrontProduct.images is ProductImage[] with { url: string }
     const url = image.url;
-    return url && url !== '' ? url : placeholderImage;
+    return url && url !== '' ? getImageUrlFromPath(url) : placeholderImage;
   };
 
   // Calculate max quantity

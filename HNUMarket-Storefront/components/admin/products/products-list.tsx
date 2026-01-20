@@ -17,6 +17,7 @@ import { formatDate, formatPrice, getStockVariant, productsColumns } from './pro
 import { ProductsRowActions } from './products-row-actions';
 import { Badge } from '@/components/ui/badge';
 import { ProductStatusToggle } from './product-status-toggle';
+import { getImageUrl } from '@/lib/image';
 
 export function ProductsList() {
     const router = useRouter();
@@ -260,7 +261,9 @@ export function ProductsList() {
                         renderMobileCard={(product) => {
                             const images = (product.images || []) as ProductImage[];
                             const placeholderImage = '/images/product-placeholder.svg';
-                            const imageUrl = images.find((img) => img?.url)?.url || placeholderImage;
+                            const imageUrl = images.find((img) => img?.url)?.url
+                                ? getImageUrl(images.find((img) => img?.url)!.url)
+                                : placeholderImage;
                             const category = product.category?.name;
 
                             return (

@@ -13,6 +13,7 @@ import Link from 'next/link';
 import { Category, categoriesApi } from '@/lib/api/categories';
 import { useDelete } from '@refinedev/core';
 import { toast } from 'sonner';
+import { getImageUrl } from '@/lib/image';
 import {
   DndContext,
   closestCenter,
@@ -78,7 +79,7 @@ function SortableCategoryRow({ category, onEdit, onDelete, disabled }: SortableC
         <div className="flex items-center gap-3">
           {category.image_url && (
             <img
-              src={category.image_url}
+              src={getImageUrl(category.image_url)}
               alt={category.name}
               className="h-10 w-10 rounded object-cover flex-shrink-0"
             />

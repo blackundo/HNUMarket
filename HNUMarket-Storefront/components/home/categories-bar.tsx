@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { storefrontCategoriesApi, type StorefrontCategory } from '@/lib/api/storefront-categories';
+import { getImageUrl } from '@/lib/image';
 import {
   Carousel,
   CarouselContent,
@@ -127,7 +128,7 @@ export function CategoriesBar({ categories: propCategories }: CategoriesBarProps
                       <div className="relative w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28">
                         {category.image ? (
                           <Image
-                            src={category.image}
+                            src={getImageUrl(category.image)}
                             alt={category.name}
                             fill
                             className="object-contain"

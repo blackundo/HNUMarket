@@ -29,6 +29,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { heroSlidesApi } from '@/lib/api/hero-slides';
+import { getImageUrl } from '@/lib/image';
 
 interface SortableSlideRowProps {
   slide: HeroSlide;
@@ -72,7 +73,7 @@ function SortableSlideRow({ slide, onEdit, onDelete, disabled }: SortableSlideRo
         >
           {slide.image_url ? (
             <img
-              src={slide.image_url}
+              src={getImageUrl(slide.image_url)}
               alt={slide.title}
               className="w-full h-full object-cover"
             />

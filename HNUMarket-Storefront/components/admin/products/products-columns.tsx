@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { DataTableColumnHeader } from './data-table-column-header';
 import { ProductStatusToggle } from './product-status-toggle';
 import Image from 'next/image';
+import { getImageUrl } from '@/lib/image';
 
 /**
  * Format price as KRW currency
@@ -48,7 +49,8 @@ export const productsColumns: ColumnDef<Product>[] = [
     header: 'Ảnh',
     cell: ({ row }) => {
       const images = row.getValue('images') as ProductImage[];
-      const imageUrl = images?.[0]?.url || '/images/product-placeholder.svg';
+      const rawImageUrl = images?.[0]?.url;
+      const imageUrl = rawImageUrl ? getImageUrl(rawImageUrl) : '/images/product-placeholder.svg';
       const name = row.original.name;
 
       return (

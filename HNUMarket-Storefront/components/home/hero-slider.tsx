@@ -8,6 +8,7 @@ import { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { storefrontHeroSlidesApi, type HeroSlide } from '@/lib/api/hero-slides';
+import { getImageUrl } from '@/lib/image';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -98,7 +99,7 @@ export function HeroSlider() {
                         `}>
                             {slide.image_url ? (
                                 <Image
-                                    src={slide.image_url}
+                                    src={getImageUrl(slide.image_url)}
                                     alt={slide.title}
                                     fill
                                     className="object-cover"

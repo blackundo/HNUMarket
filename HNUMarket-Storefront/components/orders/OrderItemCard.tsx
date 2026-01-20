@@ -1,5 +1,6 @@
 import { OrderItem } from '@/types/orders';
 import { formatCurrency } from '@/lib/format';
+import { getImageUrl } from '@/lib/image';
 import Image from 'next/image';
 import { Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -23,10 +24,10 @@ export function OrderItemCard({
   // Get product image from populated product or use placeholder
   const imageUrl = (() => {
     const image = item.product?.images?.[0];
-    if (typeof image === 'string' && image !== '') return image;
+    if (typeof image === 'string' && image !== '') return getImageUrl(image);
     if (image && typeof image === 'object' && 'url' in image) {
       const url = (image as { url?: string }).url;
-      if (url && url !== '') return url;
+      if (url && url !== '') return getImageUrl(url);
     }
     return '/images/product-placeholder.svg';
   })();

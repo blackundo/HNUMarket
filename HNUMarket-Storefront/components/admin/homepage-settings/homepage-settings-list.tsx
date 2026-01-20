@@ -38,6 +38,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { homepageSectionsApi } from '@/lib/api/homepage-sections';
+import { getImageUrl } from '@/lib/image';
 import { SectionFormDialog } from './section-form-dialog';
 import { useIsMobile } from '@/hooks/use-media-query';
 
@@ -90,7 +91,7 @@ function SortableSectionRow({
         <div className="w-16 h-16 rounded overflow-hidden bg-muted">
           {section.category?.image_url ? (
             <img
-              src={section.category.image_url}
+              src={getImageUrl(section.category.image_url)}
               alt={categoryName}
               className="w-full h-full object-cover"
             />
@@ -192,7 +193,7 @@ function SortableSectionCard({
           <div className="w-14 h-14 rounded overflow-hidden bg-muted">
             {section.category?.image_url ? (
               <img
-                src={section.category.image_url}
+                src={getImageUrl(section.category.image_url)}
                 alt={categoryName}
                 className="w-full h-full object-cover"
               />

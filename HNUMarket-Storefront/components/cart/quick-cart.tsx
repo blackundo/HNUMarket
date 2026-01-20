@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useCart, CartItemWithDetails } from "@/contexts/cart-context";
 import { formatCurrency } from "@/lib/utils";
+import { getImageUrl } from "@/lib/image";
 import { Package, Minus, Plus, Trash2, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -171,7 +172,7 @@ export function QuickCart({ customTrigger }: { customTrigger?: boolean }) {
                                                 <div className="w-20 h-24 bg-gray-100 rounded-md overflow-hidden relative border border-gray-200">
                                                     {item.product.images && item.product.images.length > 0 ? (
                                                         <Image
-                                                            src={item.product.images[0].url}
+                                                            src={getImageUrl(item.product.images[0].url)}
                                                             alt={item.product.images[0].alt_text || item.product.name}
                                                             fill
                                                             className="object-cover"

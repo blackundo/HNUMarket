@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Package } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getImageUrl } from "@/lib/image";
 
 interface ProductImageGalleryProps {
   images: string[];
@@ -60,7 +61,7 @@ export function ProductImageGallery({
                 </div>
               ) : (
                 <Image
-                  src={image}
+                  src={getImageUrl(image)}
                   alt={`${productName} ${index + 1}`}
                   width={100}
                   height={100}
@@ -85,7 +86,7 @@ export function ProductImageGallery({
           </div>
         ) : (
           <Image
-            src={displayImages[selectedImageIndex]}
+            src={getImageUrl(displayImages[selectedImageIndex])}
             alt={productName}
             width={600}
             height={600}

@@ -9,6 +9,7 @@ import { Slider } from '@/components/ui/slider';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BannerConfig } from '@/lib/api/homepage-sections';
 import { ImageIcon } from 'lucide-react';
+import { getImageUrl } from '@/lib/image';
 
 interface BannerUploaderProps {
   config: BannerConfig | undefined;
@@ -71,7 +72,7 @@ export function BannerUploader({ config, onChange, disabled }: BannerUploaderPro
             {bannerConfig.image_url && (
               <div className="mt-2 aspect-[1/2] max-w-xs rounded overflow-hidden bg-muted">
                 <img
-                  src={bannerConfig.image_url}
+                  src={getImageUrl(bannerConfig.image_url)}
                   alt="Banner preview"
                   className="w-full h-full object-cover"
                   onError={(e) => {

@@ -15,6 +15,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { ImageEditor } from './image-editor';
 import { uploadApi } from '@/lib/api/products';
 import { toast } from 'sonner';
+import { getImageUrl } from '@/lib/image';
 
 interface ImagePreviewModalProps {
   isOpen: boolean;
@@ -140,7 +141,7 @@ export function ImagePreviewModal({
             <div className="relative w-full bg-gray-100 rounded-lg overflow-hidden">
               <div className="aspect-video flex items-center justify-center">
                 <img
-                  src={imageUrl}
+                  src={getImageUrl(imageUrl)}
                   alt={altText || `Product image ${currentIndex + 1}`}
                   className="max-w-full max-h-[50vh] object-contain"
                 />

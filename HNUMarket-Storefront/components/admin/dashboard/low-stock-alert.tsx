@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { AlertTriangle } from 'lucide-react';
 import type { LowStockProduct } from '@/lib/api/dashboard';
+import { getImageUrl } from '@/lib/image';
 
 interface LowStockAlertProps {
   products: LowStockProduct[];
@@ -22,7 +23,7 @@ export function LowStockAlert({ products }: LowStockAlertProps) {
           <div key={product.id} className="flex items-center gap-3 py-2 border-b last:border-0">
             {product.image_url ? (
               <img
-                src={product.image_url}
+                src={getImageUrl(product.image_url)}
                 alt={product.name}
                 className="h-10 w-10 rounded object-cover"
               />

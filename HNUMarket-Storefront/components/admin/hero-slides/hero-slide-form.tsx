@@ -26,6 +26,7 @@ import {
     Loader2,
 } from 'lucide-react';
 import Link from 'next/link';
+import { getImageUrl } from '@/lib/image';
 
 interface HeroSlideFormProps {
     heroSlide?: HeroSlide;
@@ -288,7 +289,7 @@ export function HeroSlideForm({ heroSlide, mode }: HeroSlideFormProps) {
                                 >
                                     {imageUrl && (
                                         <img
-                                            src={imageUrl}
+                                            src={getImageUrl(imageUrl)}
                                             alt={watch('title') || 'Preview'}
                                             className="absolute inset-0 w-full h-full object-cover"
                                         />
@@ -331,7 +332,7 @@ export function HeroSlideForm({ heroSlide, mode }: HeroSlideFormProps) {
                                     {imageUrl ? (
                                         <div className="mt-2 relative">
                                             <img
-                                                src={imageUrl}
+                                                src={getImageUrl(imageUrl)}
                                                 alt="Slide"
                                                 className="aspect-[16/9] w-full rounded object-cover"
                                             />

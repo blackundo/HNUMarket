@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatDate } from '@/lib/utils';
+import { getImageUrl } from '@/lib/image';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
@@ -76,7 +77,7 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
       <div className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden mb-8">
         {post.cover_image_url ? (
           <Image
-            src={post.cover_image_url}
+            src={getImageUrl(post.cover_image_url)}
             alt={post.title}
             fill
             className="object-cover"

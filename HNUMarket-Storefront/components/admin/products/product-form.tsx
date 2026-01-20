@@ -72,6 +72,7 @@ import {
   ImagePlus,
 } from 'lucide-react';
 import Link from 'next/link';
+import { getImageUrl } from '@/lib/image';
 
 interface ProductFormProps {
   product?: Product;
@@ -1508,7 +1509,7 @@ export function ProductForm({ product, mode }: ProductFormProps) {
                             <div className="h-10 w-10 overflow-hidden rounded-md border border-gray-200 bg-gray-50">
                               {imageUrl ? (
                                 <img
-                                  src={imageUrl}
+                                  src={getImageUrl(imageUrl)}
                                   alt={label || 'variant'}
                                   className={`h-full w-full object-cover ${!isActive ? 'opacity-60' : ''}`}
                                 />

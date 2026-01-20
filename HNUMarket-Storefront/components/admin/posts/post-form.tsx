@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { TipTapEditor } from './tiptap-editor';
 import { Loader2, Upload, X } from 'lucide-react';
 import { toast } from 'sonner';
+import { getImageUrl } from '@/lib/image';
 
 interface PostFormProps {
   post?: Post;
@@ -102,7 +103,7 @@ export function PostForm({ post }: PostFormProps) {
           <label className="block text-sm font-medium text-gray-700 mb-1">Cover Image</label>
           {coverImage ? (
             <div className="relative inline-block">
-              <img src={coverImage} alt="Cover" className="h-40 rounded object-cover" />
+              <img src={getImageUrl(coverImage)} alt="Cover" className="h-40 rounded object-cover" />
               <button
                 type="button"
                 onClick={() => setCoverImage('')}

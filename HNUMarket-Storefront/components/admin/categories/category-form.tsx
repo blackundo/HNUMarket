@@ -26,6 +26,7 @@ import {
     Loader2,
 } from 'lucide-react';
 import Link from 'next/link';
+import { getImageUrl } from '@/lib/image';
 
 interface CategoryFormProps {
     category?: Category;
@@ -304,7 +305,7 @@ export function CategoryForm({ category, mode }: CategoryFormProps) {
                                     {imageUrl ? (
                                         <div className="mt-2 relative inline-block">
                                             <img
-                                                src={imageUrl}
+                                                src={getImageUrl(imageUrl)}
                                                 alt="Category"
                                                 className="h-32 w-full rounded object-cover"
                                             />

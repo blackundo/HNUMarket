@@ -3,6 +3,7 @@ import { BannerConfig } from '@/lib/api/homepage-sections';
 import type { Product } from '@/types';
 import Link from 'next/link';
 import { ImageIcon } from 'lucide-react';
+import { getImageUrl } from '@/lib/image';
 
 interface ProductGridWithBannerProps {
   products: Product[];
@@ -45,7 +46,7 @@ export function ProductGridWithBanner({
     >
       {banner.image_url ? (
         <img
-          src={banner.image_url}
+          src={getImageUrl(banner.image_url)}
           alt={banner.alt_text || 'Banner'}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />

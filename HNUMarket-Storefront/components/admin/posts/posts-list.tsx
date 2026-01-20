@@ -18,6 +18,7 @@ import { FileText, Search, Plus, Pencil, Trash2, Eye, EyeOff, ExternalLink } fro
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { getImageUrl } from '@/lib/image';
 
 export function PostsList() {
     const router = useRouter();
@@ -183,7 +184,7 @@ export function PostsList() {
                                                 <div className="flex items-center gap-3">
                                                     {post.cover_image_url && (
                                                         <img
-                                                            src={post.cover_image_url}
+                                                            src={getImageUrl(post.cover_image_url)}
                                                             alt={post.title}
                                                             className="h-10 w-16 rounded object-cover"
                                                         />
