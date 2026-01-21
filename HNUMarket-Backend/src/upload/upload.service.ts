@@ -43,15 +43,9 @@ export class UploadService {
     try {
       // Optmize image with Sharp
       const optimizedBuffer = await sharp(file.buffer)
-        .resize(1920, 1920, {
-          fit: 'inside',
-          withoutEnlargement: true,
-        })
         .webp({ quality: 80 })
         .toBuffer();
 
-      // Change extension and mimetype to webp
-      // Replace extension or append if none
       const originalNameWithoutExt = file.originalname.replace(/\.[^/.]+$/, '');
       const newFilename = `${originalNameWithoutExt}.webp`;
       const newMimeType = 'image/webp';
