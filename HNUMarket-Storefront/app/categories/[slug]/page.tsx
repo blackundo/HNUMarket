@@ -6,6 +6,7 @@ import { storefrontCategoriesApi } from "@/lib/api/storefront-categories";
 import { transformCategory, transformProducts } from "@/lib/helpers/transform-api-data";
 import { ProductCard } from "@/components/product/product-card";
 import { CategoryControls, CategorySort } from "@/components/filters/category-controls";
+import { getImageUrl } from "@/lib/image";
 
 interface CategoryPageProps {
   params: Promise<{ slug: string }>;
@@ -88,7 +89,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                     <div className="w-12 h-12 relative rounded-lg overflow-hidden shrink-0">
                       {category.image ? (
                         <Image
-                          src={category.image}
+                          src={getImageUrl(category.image)}
                           alt={category.name}
                           fill
                           className="object-cover"

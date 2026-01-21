@@ -132,7 +132,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 }
                 productName={product.name}
               />
-              <ProductVouchers />
+              {/* <ProductVouchers /> */}
             </div>
 
             {/* Separator */}
