@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useCart, CartItemWithDetails } from "@/contexts/cart-context";
 import { formatCurrency } from "@/lib/utils";
 import { getImageUrl } from "@/lib/image";
-import { Package, Minus, Plus, Trash2, ShoppingCart } from "lucide-react";
+import { Package, Minus, Plus, Trash2, ShoppingCart, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     Sheet,
@@ -37,7 +37,7 @@ function formatVariantDisplay(variant: CartItemWithDetails["variant"]): string {
 /**
  * Quick cart preview component - shows cart items in a popover
  */
-export function QuickCart({ customTrigger }: { customTrigger?: boolean }) {
+export function QuickCart({ customTrigger, showText = false }: { customTrigger?: boolean; showText?: boolean }) {
     const {
         items,
         itemCount,
@@ -107,17 +107,29 @@ export function QuickCart({ customTrigger }: { customTrigger?: boolean }) {
         <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
                 {customTrigger ? (
-                    <Button variant="outline" className={`hidden sm:flex h-12 gap-2 border-gray-200 rounded-sm hover:border-primary hover:text-accent-foreground group`}>
-                        <div className="relative">
-                            <ShoppingCart className="w-5 h-5" />
+                    showText ? (
+                        <div className="flex items-center gap-3 cursor-pointer group">
+                            <div className="relative">
+                                <ShoppingBag className="w-8 h-8 text-primary" strokeWidth={2} />
+                                <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">
+                                    {itemCount > 99 ? "99+" : itemCount}
+                                </span>
+                            </div>
+                            <div className="hidden xl:flex flex-col">
+                                <span className="text-sm font-bold text-gray-800 group-hover:text-primary transition-colors">GIỎ HÀNG</span>
+                                <span className="text-xs text-gray-500">({itemCount} sản phẩm)</span>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="relative p-2 text-gray-700 hover:text-primary transition-colors cursor-pointer">
+                            <ShoppingBag className="w-6 h-6 sm:w-7 sm:h-7" strokeWidth={2} />
                             {itemCount > 0 && (
-                                <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                                <span className="absolute top-0 right-0 bg-red-500 text-white text-[10px] sm:text-xs font-bold w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center rounded-full border-2 border-white">
                                     {itemCount > 99 ? "99+" : itemCount}
                                 </span>
                             )}
                         </div>
-                        <span className="hidden lg:inline text-sm font-semibold text-gray-700 group-hover:text-accent-foreground">Giỏ hàng</span>
-                    </Button>
+                    )
                 ) : (
                     <Button variant="outline" className="hidden sm:flex relative gap-2 border-primary text-primary hover:bg-primary hover:text-accent-foreground">
                         <ShoppingCart className="h-5 w-5 sm:h-6 sm:w-6" />

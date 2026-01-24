@@ -2,179 +2,157 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Heart, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MobileMenu } from "@/components/layout/mobile-menu";
+import { QuickCart } from "@/components/cart/quick-cart";
 import { SearchInput } from "@/components/search/search-input";
 import { useAuth } from "@/contexts/auth-context";
-import { useWishlist } from "@/contexts/wishlist-context";
-import { UserMenu } from "@/components/auth/user-menu";
-import { QuickCart } from "@/components/cart/quick-cart";
 import { useMounted } from "@/hooks/use-mounted";
-import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+
+import { UserMenu } from "@/components/auth/user-menu";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Home, Package, Info, PenTool, Phone, Search, Cake } from "lucide-react";
 
 export function Navbar() {
   const { user, logout } = useAuth();
-  const { itemCount: wishlistCount } = useWishlist();
   const mounted = useMounted();
   const [isScrolled, setIsScrolled] = useState(false);
 
   // Handle scroll event
   useEffect(() => {
     const handleScroll = () => {
-      // Trigger sticky after scrolling past top bars (approximately 80px)
-      setIsScrolled(window.scrollY > 80);
+      setIsScrolled(window.scrollY > 40);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll(); // Check initial scroll position
-
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
   return (
-    <header className="w-full z-40">
-      {/* 1. Top Green Promotion Bar */}
-      <div className={`hidden md:block bg-primary text-white text-xs py-2 px-4`}>
-        <div className="max-w-screen mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 text-center sm:text-left">
-          <p className="font-medium truncate">
-            Giao hàng MIỄN PHÍ & giảm 40% cho 3 đơn hàng tiếp theo! Đặt đơn hàng đầu tiên của bạn ngay bây giờ.
-          </p>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <span className="opacity-80">Bạn cần trợ giúp? Hãy gọi cho chúng tôi:</span>
-            <span className="font-bold">+258 3268 21485</span>
-          </div>
-        </div>
-      </div>
+    <header className="w-full z-40 relative font-sans">
+      <div className="bg-white relative z-20">
 
-      {/* 2. Secondary Top Bar (Utility Links) */}
-      <div className={`bg-white border-b border-gray-200 py-2 px-4 text-xs text-gray-500 hidden md:block`}>
-        <div className="max-w-screen mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-4">
-              <Link href="/about" className="hover:text-primary transition-colors">Về chúng tôi</Link>
-              <Link href="/account" className="hover:text-primary transition-colors">Tài khoản</Link>
-              <Link href="/wishlist" className="hover:text-primary transition-colors">Yêu thích</Link>
+        {/* 1. Top Bar */}
+        <div className="border-b border-dashed border-gray-300 bg-white">
+          <div className="container mx-auto px-4 py-2 flex flex-col sm:flex-row justify-between items-center gap-2">
+            {/* Left: Hotline */}
+            <div className="text-sm font-medium text-gray-500">
+              Hotline: <span className="text-primary font-bold text-base">1900 6750</span>
             </div>
-            <span className="w-px h-3 bg-gray-300"></span>
-            <p>Chúng tôi mở cửa mỗi ngày từ 9:00 sáng - 02:00 đêm</p>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link href="/order-check" className="hover:text-primary transition-colors">Kiểm tra đơn hàng</Link>
+
+            {/* Right: Search + Auth (Desktop) */}
+            <div className="hidden lg:flex items-center gap-6 w-full sm:w-auto">
+              {/* Search Bar - Compact */}
+              <div className="w-96">
+                <SearchInput customClass="w-full" />
+              </div>
+
+              {/* Divider */}
+              <div className="h-4 w-px bg-gray-200"></div>
+
+              {/* Auth Links / User Menu */}
+              <div className="flex h-4 items-center">
+                {mounted ? (
+                  <UserMenu user={user} onLogout={logout} customTrigger={true} />
+                ) : (
+                  <Skeleton className="hidden sm:flex h-4 w-[120px] rounded-sm" />
+                )}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* 3. Main Header (Logo, Search, Actions) - Sticky */}
-      <div
-        className={cn(
-          "bg-white px-4 transition-all duration-300",
+        {/* Sticky Wrapper for Main Header */}
+        <div className={cn(
+          "transition-all duration-300",
           isScrolled
-            ? "fixed top-0 left-0 right-0 z-50 py-3 shadow-md"
-            : "py-6"
-        )}
-      >
-        <div className="max-w-screen mx-auto flex items-center justify-between gap-4 sm:gap-8">
-          {/* Logo */}
-          <Link href="/" className="flex-shrink-0 flex items-center gap-2">
-            <h1 className="text-3xl font-bold text-primary">
-              HNUMARKET
-            </h1>
-          </Link>
+            ? "fixed top-0 left-0 right-0 z-50 bg-white shadow-md animate-slide-down"
+            : "relative bg-white shadow-sm"
+        )}>
+          {/* 2. Main Header */}
+          <div className={cn(
+            "container mx-auto px-4 transition-all duration-300 py-3",
+            isScrolled ? "sm:py-3" : "sm:py-6"
+          )}>
+            <div className="flex items-center justify-between gap-4">
 
-          {/* Search Input - Desktop */}
-          <div className="hidden md:block flex-1 max-w-2xl">
-            <SearchInput customClass="w-full" />
-          </div>
+              {/* Left: Menu Trigger (Mobile Only) */}
+              <div className="lg:hidden flex-shrink-0 w-10">
+                {mounted ? (
+                  <MobileMenu className="flex hover:bg-primary rounded-full p-0 h-10 w-10 text-gray-600" />
+                ) : (
+                  <div className="w-10 h-10 bg-gray-100 rounded-full animate-pulse" />
+                )}
+              </div>
 
-          {/* Actions */}
-          <div className="flex items-center gap-3">
-            {/* Wishlist */}
-            <Link href="/wishlist">
-              <Button variant="outline" className={`hidden sm:flex h-12 gap-2 border-gray-200 rounded-sm hover:border-primary hover:text-accent-foreground group`}>
-                <div className="relative">
-                  <Heart className="w-5 h-5" />
-                  {wishlistCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-                      {wishlistCount > 99 ? "99+" : wishlistCount}
-                    </span>
-                  )}
+              {/* Logo (Left on Desktop, Center on Mobile) */}
+              <div className="flex-1 lg:flex-none flex justify-center lg:justify-start">
+                <Link href="/" className="flex flex-col items-center lg:items-start group">
+                  <div className="flex items-center gap-2">
+                    {/* Placeholder Icon for Logo if desired, or just Text */}
+                    <Cake className="w-8 h-8 text-primary mb-1" />
+                    <div className="flex flex-col">
+                      <h1 className="text-2xl sm:text-3xl font-black text-gray-800 tracking-tighter group-hover:opacity-90 transition-opacity">
+                        HNU<span className="text-primary">MARKET</span>
+                      </h1>
+                      <span className="text-[10px] text-gray-400 tracking-[0.2em] font-medium uppercase">
+                        Asian Food Store
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+
+              {/* Center: Navigation (Desktop Only) */}
+              <nav className="hidden lg:flex items-center gap-8 mx-8">
+                <Link href="/" className="flex items-center gap-2 text-sm font-semibold text-primary hover:text-orange-600 transition-colors">
+                  <Home className="w-4 h-4" />
+                  Trang chủ
+                </Link>
+                <div className="relative group cursor-pointer flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-primary transition-colors">
+                  <Package className="w-4 h-4" />
+                  Sản phẩm
+                  {/* Dropdown would go here */}
                 </div>
-                <span className="hidden lg:inline text-sm font-semibold text-gray-700 group-hover:text-accent-foreground">Yêu thích</span>
-              </Button>
-            </Link>
+                <Link href="/about-us" className="flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-primary transition-colors">
+                  <Info className="w-4 h-4" />
+                  Giới thiệu
+                </Link>
+                <Link href="/blog" className="flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-primary transition-colors">
+                  <PenTool className="w-4 h-4" />
+                  Blog
+                </Link>
+                <Link href="#" className="flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-primary transition-colors">
+                  <Phone className="w-4 h-4" />
+                  Liên hệ
+                </Link>
+              </nav>
 
-            {/* User Menu */}
-            <div className="h-12">
-              {mounted ? (
-                <UserMenu user={user} onLogout={logout} customTrigger={true} />
-              ) : (
-                <Skeleton className="hidden sm:flex h-12 w-[120px] rounded-sm" />
-              )}
-            </div>
-
-            {/* Cart */}
-            <div className="h-12">
-              {mounted ? (
-                <QuickCart customTrigger={true} />
-              ) : (
-                <Skeleton className="hidden sm:flex h-12 w-[120px] rounded-sm" />
-              )}
-            </div>
-
-            {/* Mobile Menu Trigger */}
-            <div className="md:hidden ml-2">
-              {mounted ? (
-                <MobileMenu />
-              ) : (
-                <Skeleton className="h-10 w-10 rounded-md" />
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile Search */}
-        <div className={cn("md:hidden mt-4", isScrolled && "hidden")}>
-          <SearchInput />
-        </div>
-      </div>
-
-      {/* Spacer when navbar is fixed */}
-      {isScrolled && <div className="h-[72px] md:h-[60px]" />}
-
-      {/* 4. Navigation Menu Bar */}
-      <div className="bg-gray-100 border-t border-b border-gray-200 hidden md:block">
-        <div className="max-w-screen mx-auto px-4">
-          <div className="flex items-center justify-between h-14">
-            {/* Main Nav Links */}
-            <nav className="flex items-center gap-8 text-sm font-bold text-gray-800 uppercase tracking-wide">
-              <Link href="/" className="hover:text-primary transition-colors">Trang chủ</Link>
-              <Link href="/about" className="hover:text-primary transition-colors">Về chúng tôi</Link>
-
-              <div className="group relative cursor-pointer flex items-center gap-1 hover:text-primary transition-colors">
-                Sản phẩm <ChevronDown className="w-4 h-4" />
-                {/* Dropdown placeholder */}
-              </div>
-
-              <div className="group relative cursor-pointer flex items-center gap-1 hover:text-primary transition-colors">
-                Tin tức <ChevronDown className="w-4 h-4" />
-              </div>
-
-              <Link href="/about" className="hover:text-primary transition-colors">Giới thiệu</Link>
-              <Link href="/contact" className="hover:text-primary transition-colors">Liên hệ</Link>
-            </nav>
-
-            {/* Right Side Callouts */}
-            <div className="flex items-center">
-              <span className="text-sm font-semibold mr-4 text-gray-700">Sản phẩm bán chạy</span>
-              <div className={`bg-primary text-white px-8 py-4 h-14 flex items-center gap-2 font-bold text-sm relative -mr-4 clip-path-slant`}>
-                <span className="uppercase">Giảm ngay 30%</span>
-                <span className="bg-white text-primary text-[10px] px-2 py-0.5 rounded uppercase font-extrabold">Sale</span>
+              {/* Right: Cart */}
+              <div className="flex-shrink-0 flex justify-end">
+                {mounted ? (
+                  <QuickCart customTrigger={true} showText={true} />
+                ) : (
+                  <div className="w-10 h-10 bg-gray-100 rounded-full animate-pulse" />
+                )}
               </div>
             </div>
           </div>
+
+          {/* 3. Wavy Bottom Border */}
+          <div className="absolute -bottom-2 left-0 right-0 h-2 z-20 overflow-hidden">
+            <div className="w-full h-full bg-repeat-x" style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 10' preserveAspectRatio='none'%3E%3Cpath d='M0,0 C6,10 14,10 20,0 Z' fill='%23ffffff'/%3E%3C/svg%3E")`,
+              backgroundSize: '15px 100%'
+            }}></div>
+          </div>
         </div>
+
       </div>
+
+      {/* Spacer to prevent layout jump when Main Header becomes fixed */}
+      {isScrolled && <div className="h-[100px] lg:h-[88px]" />}
     </header>
   );
 }

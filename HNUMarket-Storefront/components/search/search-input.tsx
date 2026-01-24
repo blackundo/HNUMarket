@@ -90,7 +90,7 @@ export function SearchInput({ defaultValue = "", onMobileClose, customClass }: S
   };
 
   const handleProductClick = (slug: string) => {
-    router.push(`/product/${slug}`);
+    router.push(`/products/${slug}`);
     onMobileClose?.();
     setShowDropdown(false);
   };
@@ -107,11 +107,11 @@ export function SearchInput({ defaultValue = "", onMobileClose, customClass }: S
           onFocus={() => {
             if (query.trim()) setShowDropdown(true);
           }}
-          className="w-full pl-4 pr-12 py-2.5 border border-gray-200 border-r-0 rounded-l-md bg-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-sm transition-all [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
+          className="w-full pl-4 pr-12 py-1 border border-gray-200 border-r-0 rounded-l-md bg-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-sm transition-all [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
         />
         <Button
           type="submit"
-          className="h-auto rounded-l-none rounded-r-md bg-primary hover:bg-primary/90 text-white px-4 py-2.5"
+          className="h-auto rounded-l-none rounded-r-md bg-primary hover:bg-primary/90 text-white px-2 py-1"
         >
           <Search className="h-5 w-5" />
           <span className="sr-only">Tìm kiếm</span>

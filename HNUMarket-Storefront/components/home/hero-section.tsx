@@ -31,8 +31,8 @@ export function HeroSection({ categories }: HeroSectionProps) {
     };
 
     return (
-        <section className="bg-gray-200 py-4 sm:py-6">
-            <div className="max-w-screen mx-auto px-4">
+        <section className="bg-gray-200 pb-4 lg:pt-4">
+            <div className="max-w-screen mx-auto px-0 lg:px-4">
                 <div className="flex gap-4">
                     {/* Categories Sidebar - Desktop only (lg+), 20% width */}
                     <div className="hidden lg:block w-1/5">

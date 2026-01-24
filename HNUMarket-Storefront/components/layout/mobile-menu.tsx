@@ -23,7 +23,7 @@ const categoryIcons = {
   "do-choi-tre-em": Baby,
 } as const;
 
-export function MobileMenu() {
+export function MobileMenu({ className }: { className?: string }) {
   const router = useRouter();
   const supabase = createClient();
   const [isOpen, setIsOpen] = useState(false);
@@ -102,7 +102,7 @@ export function MobileMenu() {
         <Button
           variant="ghost"
           size="icon"
-          className="md:hidden"
+          className={className ?? "md:hidden"}
           aria-label="Toggle menu"
         >
           <Menu className="h-6 w-6" />
