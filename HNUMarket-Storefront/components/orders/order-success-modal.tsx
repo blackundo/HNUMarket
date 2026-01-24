@@ -2,8 +2,15 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { X, Copy, CheckCircle, MessageCircle } from 'lucide-react';
+import { Copy, CheckCircle, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
 import {
   buildOrderConfirmationMessage,
   openMessengerWithMessage,
@@ -53,76 +60,74 @@ export function OrderSuccessModal({
     router.push(`/orders/${orderNumber}`);
   };
 
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-      <div className="bg-white rounded-lg max-w-md w-full p-6 relative">
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
-        >
-          <X className="w-5 h-5" />
-        </button>
+    <Dialog open={true} onOpenChange={handleOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <div className="flex justify-center mb-4">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+              <CheckCircle className="w-10 h-10 text-green-600" />
+            </div>
+          </div>
+          <DialogTitle className="text-2xl font-bold text-center">
+            Đặt hàng thành công!
+          </DialogTitle>
+          <p className="text-center text-gray-600">
+            Đơn hàng của bạn đã được tạo thành công
+          </p>
+        </DialogHeader>
 
-        {/* Success icon */}
-        <div className="flex justify-center mb-4">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-            <CheckCircle className="w-10 h-10 text-green-600" />
+        <div className="py-4">
+          {/* Order number */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Mã đơn hàng
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={orderNumber}
+                readOnly
+                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 font-mono text-center text-lg font-semibold focus:outline-none"
+              />
+              <button
+                onClick={handleCopy}
+                className="px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                title="Copy mã đơn hàng"
+              >
+                {copied ? (
+                  <CheckCircle className="w-5 h-5 text-green-600" />
+                ) : (
+                  <Copy className="w-5 h-5 text-gray-600" />
+                )}
+              </button>
+            </div>
+            <p className="text-xs text-center text-gray-500 mt-2">
+              Click vào nút copy để sao chép mã đơn hàng
+            </p>
+          </div>
+
+          {/* Instructions */}
+          <div className="mb-2 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-sm text-blue-900 font-medium mb-2">
+              Hướng dẫn:
+            </p>
+            <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
+              <li>Copy mã đơn hàng ở trên</li>
+              <li>Nhấn nút "Gửi tin nhắn chốt đơn" bên dưới</li>
+              <li>Dán mã đơn hàng vào tin nhắn Messenger</li>
+              <li>Gửi tin nhắn để chốt đơn hàng</li>
+            </ol>
           </div>
         </div>
 
-        {/* Title */}
-        <h2 className="text-2xl font-bold text-center mb-2">
-          Đặt hàng thành công!
-        </h2>
-        <p className="text-center text-gray-600 mb-6">
-          Đơn hàng của bạn đã được tạo thành công
-        </p>
-
-        {/* Order number */}
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Mã đơn hàng
-          </label>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={orderNumber}
-              readOnly
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 font-mono text-center text-lg font-semibold"
-            />
-            <button
-              onClick={handleCopy}
-              className="px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-              title="Copy mã đơn hàng"
-            >
-              {copied ? (
-                <CheckCircle className="w-5 h-5 text-green-600" />
-              ) : (
-                <Copy className="w-5 h-5 text-gray-600" />
-              )}
-            </button>
-          </div>
-          <p className="text-xs text-gray-500 mt-2">
-            Click vào nút copy để sao chép mã đơn hàng
-          </p>
-        </div>
-
-        {/* Instructions */}
-        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-sm text-blue-900 font-medium mb-2">
-            Hướng dẫn:
-          </p>
-          <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
-            <li>Copy mã đơn hàng ở trên</li>
-            <li>Nhấn nút "Gửi tin nhắn chốt đơn" bên dưới</li>
-            <li>Dán mã đơn hàng vào tin nhắn Messenger</li>
-            <li>Gửi tin nhắn để chốt đơn hàng</li>
-          </ol>
-        </div>
-
-        {/* Action buttons */}
-        <div className="space-y-3">
+        <DialogFooter className="flex-col sm:flex-col space-y-2 gap-2">
           <Button
             onClick={handleMessengerClick}
             className="w-full bg-primary hover:bg-primary/90 text-white font-medium h-12 text-base"
@@ -137,12 +142,12 @@ export function OrderSuccessModal({
               router.push(`/orders/${orderNumber}`);
             }}
             variant="outline"
-            className="w-full h-12 text-base"
+            className="w-full h-12 text-base mt-2 sm:mt-0"
           >
             Xem chi tiết đơn hàng
           </Button>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
