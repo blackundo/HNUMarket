@@ -74,7 +74,7 @@ export function LayoutConfigurator({ config, onChange }: LayoutConfiguratorProps
             onValueChange={(value) => updateConfig({ product_limit: value[0] })}
             min={4}
             max={24}
-            step={4}
+            step={1}
             className="w-full"
           />
           <p className="text-xs text-muted-foreground">Từ 4 đến 24 sản phẩm</p>
