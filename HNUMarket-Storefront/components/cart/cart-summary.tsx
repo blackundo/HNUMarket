@@ -221,7 +221,7 @@ export function CartSummary() {
           address: address,
           ward: "",
           district: "",
-          city: "", // Temporarily set to empty - was: selectedShippingLocation.name
+          city: "khác", // Temporarily set to empty - was: selectedShippingLocation.name
         },
         paymentMethod: "sepay",
         shippingFee: 0, // Temporarily set to 0 - was: selectedShippingLocation.fee
