@@ -98,10 +98,11 @@ export function CartSummary() {
       return;
     }
 
-    if (!selectedShippingLocation) {
-      toast.error("Vui lòng chọn khu vực giao hàng");
-      return;
-    }
+    // Temporarily disabled - will restore later
+    // if (!selectedShippingLocation) {
+    //   toast.error("Vui lòng chọn khu vực giao hàng");
+    //   return;
+    // }
 
     if (!phone.trim()) {
       toast.error("Vui lòng nhập số điện thoại");
@@ -220,10 +221,10 @@ export function CartSummary() {
           address: address,
           ward: "",
           district: "",
-          city: selectedShippingLocation.name,
+          city: "", // Temporarily set to empty - was: selectedShippingLocation.name
         },
         paymentMethod: "sepay",
-        shippingFee: selectedShippingLocation.fee,
+        shippingFee: 0, // Temporarily set to 0 - was: selectedShippingLocation.fee
         discount: 0,
         notes: note || undefined,
       });
@@ -235,7 +236,7 @@ export function CartSummary() {
         items: gaItems as any,
         value: summary.total,
         tax: 0,
-        shipping: selectedShippingLocation.fee,
+        shipping: 0, // Temporarily set to 0 - was: selectedShippingLocation.fee
         currency: 'KRW',
       });
 
@@ -283,7 +284,7 @@ export function CartSummary() {
 
       {/* Location Selection */}
       <div className="p-4 space-y-4">
-        <div>
+        {/* <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Địa điểm giao hàng <span className="text-red-500">*</span>
           </label>
@@ -321,7 +322,7 @@ export function CartSummary() {
               )}
             </>
           )}
-        </div>
+        </div> */}
 
         {/* Phone Input */}
         <div>
@@ -414,14 +415,14 @@ export function CartSummary() {
       </div>
 
       {/* QR Code Section */}
-      <div className="p-4 border-t border-gray-200 bg-gray-50">
+      {/* <div className="p-4 border-t border-gray-200 bg-gray-50">
         <h3 className="text-sm font-medium text-gray-900 mb-3">
           Mô tả thêm về quy trình thanh toán
         </h3>
         <div className="aspect-square bg-gray-300 rounded-lg flex items-center justify-center">
           <span className="text-gray-500 text-xs">QR Code</span>
         </div>
-      </div>
+      </div> */}
 
       {/* Mobile Sticky Checkout Button */}
       <div
