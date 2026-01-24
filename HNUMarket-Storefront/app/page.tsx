@@ -6,6 +6,7 @@ import { transformProducts, transformCategories } from "@/lib/helpers/transform-
 import { HeroSection } from "@/components/home/hero-section";
 import { CategoriesBar } from "@/components/home/categories-bar";
 import { HomepageSection } from "@/components/home/homepage-section";
+import { FlashSaleSection } from "@/components/home/flash-sale-section";
 import Link from "next/link";
 import { Zap } from "lucide-react";
 
@@ -50,24 +51,7 @@ export default async function Home() {
 
       {/* Flash Sale */}
       {flashSaleProducts.length > 0 && (
-        <section className="py-8 sm:py-12">
-          <div className="max-w-screen mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between mb-4 sm:mb-6">
-              <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold flex items-center gap-2">
-                <Zap className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 fill-yellow-400 text-yellow-400" />
-                <span>Flash Sale</span>
-              </h2>
-              <Link href="/flash-sale" className="text-primary hover:underline text-sm sm:text-base transition-colors duration-200">
-                Xem tất cả
-              </Link>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
-              {flashSaleProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          </div>
-        </section>
+        <FlashSaleSection products={flashSaleProducts} />
       )}
 
       {/* Featured Products */}
