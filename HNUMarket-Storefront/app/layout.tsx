@@ -79,8 +79,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi">
-      <body className={`${montserrat.variable} ${poppins.variable} ${openSans.variable} font-sans antialiased`}>
+    <html lang="vi" suppressHydrationWarning>
+      <body className={`${montserrat.variable} ${poppins.variable} ${openSans.variable} font-sans antialiased`} suppressHydrationWarning>
         <GoogleAnalytics />
         <Suspense fallback={null}>
           <GAPageView />
