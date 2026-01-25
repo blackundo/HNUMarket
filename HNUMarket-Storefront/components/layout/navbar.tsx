@@ -38,7 +38,7 @@ export function Navbar() {
           <div className="container mx-auto px-4 py-2 flex flex-col sm:flex-row justify-between items-center gap-2">
             {/* Left: Hotline */}
             <div className="text-sm font-medium text-gray-500">
-              Hotline: <span className="text-primary font-bold text-base">1900 6750</span>
+              Hotline: <span className="text-primary font-bold text-base">010 8207 2806</span>
             </div>
 
             {/* Right: Search + Auth (Desktop) */}

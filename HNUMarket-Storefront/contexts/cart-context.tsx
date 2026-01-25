@@ -480,9 +480,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
     });
 
-    const shipping = selectedItems.size > 0 && selectedShippingLocation
-      ? selectedShippingLocation.fee
-      : 0;
+    // Calculate shipping based on subtotal
+    // < 30,000 → 4,000
+    // >= 30,000 and < 50,000 → 2,000
+    // >= 50,000 → free
+    let shipping = 0;
+    if (selectedItems.size > 0 && subtotal > 0) {
+      if (subtotal >= 50000) {
+        shipping = 0; // Free shipping
+      } else if (subtotal >= 30000) {
+        shipping = 2000;
+      } else {
+        shipping = 4000;
+      }
+    }
     const total = subtotal + shipping;
 
     return {

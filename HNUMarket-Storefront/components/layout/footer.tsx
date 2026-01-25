@@ -37,7 +37,7 @@ export function Footer() {
           <div>
             <h4 className="text-gray-900 font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Hỗ trợ</h4>
             <ul className="space-y-2 text-xs sm:text-sm">
-              <li><a href="#" className="text-gray-600 hover:text-primary transition-colors duration-200 inline-block min-h-[44px] flex items-center">Hotline: 1900 xxxx</a></li>
+              <li><a href="#" className="text-gray-600 hover:text-primary transition-colors duration-200 inline-block min-h-[44px] flex items-center">Hotline: 010 8207 2806</a></li>
               <li><a href="#" className="text-gray-600 hover:text-primary transition-colors duration-200 inline-block min-h-[44px] flex items-center">Email: support@hnumarket.com</a></li>
               <li><a href="#" className="text-gray-600 hover:text-primary transition-colors duration-200 inline-block min-h-[44px] flex items-center">Messenger</a></li>
             </ul>

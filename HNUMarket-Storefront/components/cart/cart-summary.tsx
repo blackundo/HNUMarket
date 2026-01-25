@@ -75,10 +75,10 @@ export function CartSummary() {
     try {
       const data = await getActiveLocations();
       setLocations(data);
-      // Auto-select first location if available
-      if (data.length > 0 && !selectedShippingLocation) {
-        setSelectedShippingLocation(data[0]);
-      }
+      // Temporarily disabled - Auto-select first location if available
+      // if (data.length > 0 && !selectedShippingLocation) {
+      //   setSelectedShippingLocation(data[0]);
+      // }
     } catch (error) {
       console.error("Failed to load shipping locations:", error);
     }
@@ -377,8 +377,8 @@ export function CartSummary() {
 
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium text-gray-900">PHÍ VẬN CHUYỂN ĐƠN HÀNG LÀ:</span>
-          <span className="text-lg font-bold text-destructive">
-            {formatCurrency(summary.shipping)}
+          <span className={`text-lg font-bold ${summary.shipping === 0 ? 'text-green-600' : 'text-destructive'}`}>
+            {summary.shipping === 0 ? 'Miễn phí' : formatCurrency(summary.shipping)}
           </span>
         </div>
 

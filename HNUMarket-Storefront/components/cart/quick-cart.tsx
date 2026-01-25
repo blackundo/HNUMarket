@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useCart, CartItemWithDetails } from "@/contexts/cart-context";
 import { formatCurrency } from "@/lib/utils";
 import { getImageUrl } from "@/lib/image";
-import { Package, Minus, Plus, Trash2, ShoppingCart, ShoppingBag } from "lucide-react";
+import { Package, Minus, Plus, Trash2, ShoppingCart, ShoppingBag, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     Sheet,
@@ -15,6 +15,12 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 /**
  * Format variant attributes into display string
@@ -287,11 +293,34 @@ export function QuickCart({ customTrigger, showText = false }: { customTrigger?:
                         <div className="space-y-2">
                             <div className="flex items-center justify-between">
                                 <span className="text-sm text-gray-600">Tạm tính:</span>
-                                <span className="text-base font-semibold text-gray-900">
-                                    {formatCurrency(summary.total)}
+                                <span className="text-sm font-medium text-gray-900">
+                                    {formatCurrency(summary.subtotal)}
                                 </span>
                             </div>
-                            <div className="flex items-center justify-between text-lg font-bold">
+                            <div className="flex items-center justify-between">
+                                <span className="text-sm text-gray-600 flex items-center gap-1">
+                                    Phí vận chuyển:
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <Info className="h-3.5 w-3.5 text-gray-400 hover:text-primary cursor-help" />
+                                            </TooltipTrigger>
+                                            <TooltipContent side="top" className="max-w-xs bg-gray-900 text-white p-3">
+                                                <div className="text-xs space-y-1">
+                                                    <p className="font-semibold">Lưu ý:</p>
+                                                    <p>1. Đơn hàng DƯỚI 30K won + 4K phí 택배</p>
+                                                    <p>2. Đơn hàng TRÊN 30K won (giảm 50% phí 택배)</p>
+                                                    <p>3. Đơn hàng TRÊN 50K won (miễn phí 택배)</p>
+                                                </div>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
+                                </span>
+                                <span className={`text-sm font-medium ${summary.shipping === 0 ? 'text-green-600' : 'text-primary'}`}>
+                                    {summary.shipping === 0 ? 'Miễn phí' : formatCurrency(summary.shipping)}
+                                </span>
+                            </div>
+                            <div className="flex items-center justify-between text-lg font-bold pt-2 border-t border-gray-200">
                                 <span className="text-gray-900">Tổng cộng:</span>
                                 <span className="text-primary">{formatCurrency(summary.total)}</span>
                             </div>
