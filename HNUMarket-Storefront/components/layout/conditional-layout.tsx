@@ -15,7 +15,7 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
     <>
       {!isAdminRoute && !isAuthRoute && <Navbar />}
       <main className="min-h-screen">{children}</main>
-      {!isAdminRoute && !isAuthRoute && <PolicyBanner />}
+      {pathname === '/' && <PolicyBanner />}
       {!isAdminRoute && !isAuthRoute && <Footer />}
       {!isAdminRoute && (
         <Toaster position="top-right" richColors offset={{ top: 100 }} />
