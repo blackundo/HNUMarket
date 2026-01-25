@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { MobileMenu } from "@/components/layout/mobile-menu";
 import { QuickCart } from "@/components/cart/quick-cart";
@@ -12,7 +13,7 @@ import { cn } from "@/lib/utils";
 
 import { UserMenu } from "@/components/auth/user-menu";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Home, Package, Info, PenTool, Phone, Search, Cake } from "lucide-react";
+import { Home, Package, Info, PenTool, Phone, Search } from "lucide-react";
 
 export function Navbar() {
   const { user, logout } = useAuth();
@@ -91,7 +92,14 @@ export function Navbar() {
                 <Link href="/" className="flex flex-col items-center lg:items-start group">
                   <div className="flex items-center gap-2">
                     {/* Placeholder Icon for Logo if desired, or just Text */}
-                    <Cake className="w-8 h-8 text-primary mb-1" />
+                    <div className="relative w-8 h-8 mb-1">
+                      <Image
+                        src="/images/favicon/android-chrome-192x192.png"
+                        alt="HNUMarket Logo"
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
                     <div className="flex flex-col">
                       <h1 className="text-2xl sm:text-3xl font-black text-gray-800 tracking-tighter group-hover:opacity-90 transition-opacity">
                         HNU<span className="text-primary">MARKET</span>
