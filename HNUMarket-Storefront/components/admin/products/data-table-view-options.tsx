@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useMounted } from '@/hooks/use-mounted';
 
 interface DataTableViewOptionsProps<TData> {
   table: Table<TData>;
@@ -23,6 +24,18 @@ interface DataTableViewOptionsProps<TData> {
 export function DataTableViewOptions<TData>({
   table,
 }: DataTableViewOptionsProps<TData>) {
+  const mounted = useMounted();
+
+  // Prevent hydration mismatch from Radix UI generating different IDs on server vs client
+  if (!mounted) {
+    return (
+      <Button variant="outline" size="sm" className="ml-auto h-8">
+        <Settings2 className="mr-2 h-4 w-4" />
+        Cột hiển thị
+      </Button>
+    );
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
