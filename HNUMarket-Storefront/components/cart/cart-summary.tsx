@@ -276,15 +276,16 @@ export function CartSummary() {
   };
 
   return (
-    <div className="bg-white rounded-lg overflow-hidden sticky top-20">
-      {/* Header */}
-      <div className="p-4 bg-gray-50 border-b border-gray-200">
-        <h2 className="font-bold text-lg">THÔNG TIN NGƯỜI NHẬN HÀNG</h2>
-      </div>
+    <>
+      <div className="bg-white rounded-lg overflow-hidden sticky top-20">
+        {/* Header */}
+        <div className="p-4 bg-gray-50 border-b border-gray-200">
+          <h2 className="font-bold text-lg">THÔNG TIN NGƯỜI NHẬN HÀNG</h2>
+        </div>
 
-      {/* Location Selection */}
-      <div className="p-4 space-y-4">
-        {/* <div>
+        {/* Location Selection */}
+        <div className="p-4 space-y-4">
+          {/* <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Địa điểm giao hàng <span className="text-red-500">*</span>
           </label>
@@ -324,98 +325,98 @@ export function CartSummary() {
           )}
         </div> */}
 
-        {/* Phone Input */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Số điện thoại <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="Số điện thoại liên hệ"
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-            required
-          />
-        </div>
-
-        {/* Address Input */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Địa chỉ <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            placeholder="Địa chỉ cụ thể (ví dụ: 홍도동 123 1동)"
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-            required
-          />
-        </div>
-
-
-        {/* Shipping Instructions */}
-        {checkoutNotes.length > 0 && (
-          <div className="text-xs text-gray-600 space-y-1 bg-blue-50 p-3 rounded-lg">
-            <p className="font-medium text-gray-900">Lưu ý:</p>
-            {checkoutNotes.map((note, index) => (
-              <p key={index}>{index + 1}. {note}</p>
-            ))}
+          {/* Phone Input */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Số điện thoại <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="Số điện thoại liên hệ"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+              required
+            />
           </div>
-        )}
-      </div>
 
-      <Separator className="my-0" />
+          {/* Address Input */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Địa chỉ <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="Địa chỉ cụ thể (ví dụ: 홍도동 123 1동)"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+              required
+            />
+          </div>
 
-      {/* Price Summary */}
-      <div className="p-4 space-y-3">
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-600">Tạm tính:</span>
-          <span className="font-medium">{formatCurrency(summary.subtotal)}</span>
-        </div>
 
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-gray-900">PHÍ VẬN CHUYỂN ĐƠN HÀNG LÀ:</span>
-          <span className={`text-lg font-bold ${summary.shipping === 0 ? 'text-green-600' : 'text-destructive'}`}>
-            {summary.shipping === 0 ? 'Miễn phí' : formatCurrency(summary.shipping)}
-          </span>
-        </div>
-
-        <Separator />
-
-        <div className="flex items-center justify-between">
-          <span className="text-base font-bold text-gray-900">TỔNG TIỀN:</span>
-          <span className="text-2xl font-bold text-destructive">
-            {formatCurrency(summary.total)}
-          </span>
-        </div>
-      </div>
-
-      {/* Checkout Button - Hidden on mobile, shown on desktop */}
-      <div className="p-4 pt-0 hidden md:block">
-        <Button
-          onClick={handleCheckout}
-          size="lg"
-          className="w-full bg-destructive hover:bg-destructive/90 text-white font-bold text-base h-14"
-          disabled={selectedItems.size === 0 || isProcessing}
-        >
-          {isProcessing ? (
-            <>
-              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-              ĐANG XỬ LÝ...
-            </>
-          ) : (
-            <>
-              <MessageCircle className="mr-2 h-5 w-5" />
-              THANH TOÁN
-            </>
+          {/* Shipping Instructions */}
+          {checkoutNotes.length > 0 && (
+            <div className="text-xs text-gray-600 space-y-1 bg-blue-50 p-3 rounded-lg">
+              <p className="font-medium text-gray-900">Lưu ý:</p>
+              {checkoutNotes.map((note, index) => (
+                <p key={index}>{index + 1}. {note}</p>
+              ))}
+            </div>
           )}
-        </Button>
-      </div>
+        </div>
 
-      {/* QR Code Section */}
-      {/* <div className="p-4 border-t border-gray-200 bg-gray-50">
+        <Separator className="my-0" />
+
+        {/* Price Summary */}
+        <div className="p-4 space-y-3">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-600">Tạm tính:</span>
+            <span className="font-medium">{formatCurrency(summary.subtotal)}</span>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-gray-900">PHÍ VẬN CHUYỂN ĐƠN HÀNG LÀ:</span>
+            <span className={`text-lg font-bold ${summary.shipping === 0 ? 'text-green-600' : 'text-destructive'}`}>
+              {summary.shipping === 0 ? 'Miễn phí' : formatCurrency(summary.shipping)}
+            </span>
+          </div>
+
+          <Separator />
+
+          <div className="flex items-center justify-between">
+            <span className="text-base font-bold text-gray-900">TỔNG TIỀN:</span>
+            <span className="text-2xl font-bold text-destructive">
+              {formatCurrency(summary.total)}
+            </span>
+          </div>
+        </div>
+
+        {/* Checkout Button - Hidden on mobile, shown on desktop */}
+        <div className="p-4 pt-0 hidden md:block">
+          <Button
+            onClick={handleCheckout}
+            size="lg"
+            className="w-full bg-destructive hover:bg-destructive/90 text-white font-bold text-base h-14"
+            disabled={selectedItems.size === 0 || isProcessing}
+          >
+            {isProcessing ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                ĐANG XỬ LÝ...
+              </>
+            ) : (
+              <>
+                <MessageCircle className="mr-2 h-5 w-5" />
+                THANH TOÁN
+              </>
+            )}
+          </Button>
+        </div>
+
+        {/* QR Code Section */}
+        {/* <div className="p-4 border-t border-gray-200 bg-gray-50">
         <h3 className="text-sm font-medium text-gray-900 mb-3">
           Mô tả thêm về quy trình thanh toán
         </h3>
@@ -423,8 +424,9 @@ export function CartSummary() {
           <span className="text-gray-500 text-xs">QR Code</span>
         </div>
       </div> */}
+      </div>
 
-      {/* Mobile Sticky Checkout Button */}
+      {/* Mobile Sticky Checkout Button - Outside sticky wrapper to avoid stacking context issues */}
       <div
         className="md:hidden fixed left-0 right-0 bottom-0 z-50 bg-white border-t border-gray-200 shadow-[0_-4px_12px_rgba(0,0,0,0.1)] p-4"
         style={{
@@ -452,19 +454,21 @@ export function CartSummary() {
       </div>
 
       {/* Order Success Modal */}
-      {showSuccessModal && createdOrder && (
-        <OrderSuccessModal
-          orderId={createdOrder.id}
-          orderNumber={createdOrder.orderNumber}
-          totalAmount={createdOrder.totalAmount}
-          messengerPageId={messengerPageId}
-          onClose={() => {
-            setShowSuccessModal(false);
-            setCreatedOrder(null);
-            clearCart();
-          }}
-        />
-      )}
-    </div>
+      {
+        showSuccessModal && createdOrder && (
+          <OrderSuccessModal
+            orderId={createdOrder.id}
+            orderNumber={createdOrder.orderNumber}
+            totalAmount={createdOrder.totalAmount}
+            messengerPageId={messengerPageId}
+            onClose={() => {
+              setShowSuccessModal(false);
+              setCreatedOrder(null);
+              clearCart();
+            }}
+          />
+        )
+      }
+    </>
   );
 }
