@@ -275,13 +275,13 @@ export function ProductInfo({ product }: ProductInfoProps) {
         <div className="flex items-center gap-2">
           <ShieldCheck className="w-5 h-5 text-primary" />
           <span className="text-gray-800 font-medium">
-            Hoàn tiền 111% nếu hàng giả
+            Hoàn tiền hàng kém chất lượng
           </span>
         </div>
         <div className="flex items-center gap-2">
           <ThumbsUp className="w-5 h-5 text-primary" />
           <span className="text-gray-800 font-medium">
-            Mở hộp kiểm tra nhận hàng
+            Quay video kiểm tra hàng
           </span>
         </div>
         <div className="flex items-center gap-2">
