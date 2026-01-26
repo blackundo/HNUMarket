@@ -46,14 +46,15 @@ export function openMessengerWithMessage(
   // Detect if on mobile
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-  if (isMobile) {
-    // Try to open app, fallback to web after short delay
-    window.location.href = messengerAppUrl;
-    setTimeout(() => {
-      window.open(messengerWebUrl, "_blank");
-    }, 1000);
-  } else {
-    // Desktop: open web version
-    window.open(messengerWebUrl, "_blank");
-  }
+  // if (isMobile) {
+  //   // Try to open app, fallback to web after short delay
+  //   window.location.href = messengerAppUrl;
+  //   setTimeout(() => {
+  //     window.open(messengerWebUrl, "_blank");
+  //   }, 1000);
+  // } else {
+  //   // Desktop: open web version
+  //   window.open(messengerWebUrl, "_blank");
+  // }
+  window.open(messengerWebUrl, "_blank");
 }
