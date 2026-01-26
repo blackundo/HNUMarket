@@ -33,20 +33,22 @@ export function HomepageSection({ section }: HomepageSectionProps) {
       <div className="max-w-screen mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         {display.show_category_header && (
-          <div className="flex items-center justify-between mb-3 sm:mb-4">
-            <div className="relative group cursor-pointer">
-              <h2 className="text-lg sm:text-xl lg:text-2xl tracking-tight font-semibold">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3 group leading-none">
+              {/* Decorative Accent */}
+              <div className="w-1.5 h-6 bg-primary rounded-full transition-all duration-300 group-hover:h-7 group-hover:opacity-80" />
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight transition-colors group-hover:text-primary">
                 {title}
               </h2>
-              <div className="absolute -bottom-2 left-0 w-16 group-hover:w-full h-1 bg-gradient-to-r from-primary to-primary/30 rounded-full transition-all duration-500 ease-out" />
             </div>
 
             {display.show_view_all_link && (
-              <Link href={categoryLink} className="text-primary text-xs sm:text-sm transition-colors duration-200">
-                <button className="group relative px-5 py-2.5 bg-primary/10 hover:bg-primary text-primary hover:text-primary-foreground rounded-full font-semibold text-sm transition-all duration-300 flex items-center gap-2 overflow-hidden">
-                  <span className="relative">Xem tất cả</span>
-                  <ChevronRight className="w-4 h-4 relative group-hover:translate-x-1 transition-transform" />
-                </button>
+              <Link
+                href={categoryLink}
+                className="group flex items-center gap-1.5 text-sm font-semibold text-gray-500 hover:text-primary transition-colors duration-200"
+              >
+                <span>Xem tất cả</span>
+                <ChevronRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
             )}
           </div>
