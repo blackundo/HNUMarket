@@ -302,11 +302,11 @@ export function ProductCard({ product, is_slider = false }: ProductCardProps) {
   const imageUrl = getFirstImageUrl();
 
   return (
-    <div className="group bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer flex flex-col">
-      {/* Image */}
+    <div className="group relative bg-white rounded-2xl border border-gray-100 flex flex-col h-full transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:border-primary/50 overflow-hidden">
+      {/* Image Section */}
       <Link
         href={`/products/${product.slug}`}
-        className="relative aspect-square bg-gray-50 overflow-hidden"
+        className="relative aspect-[1/1] block bg-gray-50 overflow-hidden"
         onClick={handleCardClick}
       >
         {imageUrl ? (
@@ -315,11 +315,45 @@ export function ProductCard({ product, is_slider = false }: ProductCardProps) {
             alt={product.name}
             fill
             sizes="(max-width: 640px) 50vw, 25vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className="object-cover transition-transform duration-500 will-change-transform group-hover:scale-110"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 via-gray-50 to-purple-50">
-            <Package className="w-16 h-16 text-gray-300" strokeWidth={1.5} />
+          <div className="w-full h-full flex items-center justify-center bg-gray-50">
+            <Package className="w-12 h-12 text-gray-200" strokeWidth={1} />
+          </div>
+        )}
+
+        {/* Badges - Clean & Modern */}
+        {product.badges && product.badges.length > 0 && (
+          <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
+            {product.badges.map((badge) => (
+              <Badge
+                key={badge}
+                className={cn(
+                  "px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider border-0 backdrop-blur-md shadow-sm",
+                  badge === "flash-sale" && "bg-red-500 text-white",
+                  badge === "new" && "bg-blue-500 text-white",
+                  badge === "freeship" && "bg-green-500 text-white",
+                  badge === "authentic" && "bg-purple-500 text-white",
+                  badge === "best-seller" && "bg-amber-500 text-white"
+                )}
+              >
+                {badge === "flash-sale" && "Flash Sale"}
+                {badge === "new" && "Mới"}
+                {badge === "freeship" && "Freeship"}
+                {badge === "authentic" && "Chính hãng"}
+                {badge === "best-seller" && "Bán chạy"}
+              </Badge>
+            ))}
+          </div>
+        )}
+
+        {/* Discount Badge */}
+        {discount > 0 && (
+          <div className="absolute top-3 right-0 z-10">
+            <span className="bg-red-500 text-white text-[11px] font-bold px-2 py-1 rounded-l-lg shadow-sm">
+              -{discount}%
+            </span>
           </div>
         )}
 
@@ -367,48 +401,22 @@ export function ProductCard({ product, is_slider = false }: ProductCardProps) {
             <Eye className="w-4 h-4" />
           </button>
         </div>
-
-        {/* Badges */}
-        {product.badges && product.badges.length > 0 && (
-          <div className="absolute top-2 left-2 flex flex-col gap-1">
-            {product.badges.map((badge) => (
-              <Badge key={badge} variant={badge}>
-                {badge === "flash-sale" && "FLASH SALE"}
-                {badge === "new" && "MỚI"}
-                {badge === "freeship" && "FREESHIP"}
-                {badge === "authentic" && "CHÍNH HÃNG"}
-                {badge === "best-seller" && "BÁN CHẠY"}
-              </Badge>
-            ))}
-          </div>
-        )}
-
-        {discount > 0 && (
-          <div className="absolute top-2 right-2 bg-primary text-white px-2 py-1 rounded-md text-xs sm:text-sm font-bold">
-            -{discount}%
-          </div>
-        )}
       </Link>
 
-      {/* Content - Fixed height sections */}
-      <div className="flex flex-col p-4 gap-3 flex-1">
-        {/* Product Name - Fixed 2 lines */}
-        <Link href={`/products/${product.slug}`} onClick={handleCardClick}>
-          <h3 className="font-semibold text-sm leading-snug line-clamp-2 h-10 group-hover:text-primary transition-colors duration-200">
+      {/* Content Section */}
+      <div className="flex flex-col flex-1 p-4 gap-3">
+        {/* Title */}
+        <Link href={`/products/${product.slug}`} onClick={handleCardClick} className="group/title">
+          <h3 className="font-medium text-gray-800 text-[15px] leading-snug line-clamp-2 h-10 group-hover/title:text-primary transition-colors">
             {product.name}
           </h3>
         </Link>
 
-        {/* Variants - Fixed height container with overflow handling */}
-        <div className="h-8 flex items-center" ref={variantsContainerRef}>
+        {/* Variants - Minimalist Pills */}
+        <div className="h-7 flex items-center" ref={variantsContainerRef}>
           {optionsCount > 1 ? (
-            // Multi-attribute variants (>1 option): Show "Nhiều tuỳ chọn" text
-
-            <Link href={`/products/${product.slug}`} className="text-xs font-medium text-muted-foreground ransition-colors" onClick={handleCardClick}>
-              Nhiều tuỳ chọn
-            </Link>
+            <span className="text-xs text-gray-500 font-medium">Nhiều tùy chọn</span>
           ) : optionsCount === 1 && singleOptionValues ? (
-            // Single-attribute multi-attr product: Show option values as buttons
             <div className="flex gap-1.5 items-center">
               {singleOptionValues.slice(0, visibleVariantsCount).map((value: any) => (
                 <button
@@ -416,28 +424,23 @@ export function ProductCard({ product, is_slider = false }: ProductCardProps) {
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    setSelectedAttributeValue(value.name); // Select this value
+                    setSelectedAttributeValue(value.name);
                   }}
                   className={cn(
-                    "px-2.5 py-1 text-xs font-medium rounded-full border transition-all duration-200 whitespace-nowrap",
+                    "px-2 py-0.5 text-[11px] font-medium rounded-full border transition-all duration-200",
                     selectedAttributeValue === value.name
-                      ? "border-primary bg-primary text-white shadow-sm"
-                      : "border-gray-200 bg-gray-50 text-gray-700 hover:border-primary/50 hover:text-gray-900"
+                      ? "border-primary bg-primary text-white"
+                      : "border-gray-200 bg-transparent text-gray-600 hover:border-primary/50 hover:text-primary"
                   )}
                 >
                   {value.displayName || value.name}
                 </button>
               ))}
               {singleOptionValues.length > visibleVariantsCount && (
-                <Link href={`/products/${product.slug}`}
-                  className="px-2 py-1 text-xs font-medium text-gray-600 bg-gray-50 rounded-full hover:bg-gray-100"
-                  onClick={handleCardClick}>
-                  +{singleOptionValues.length - visibleVariantsCount}
-                </Link>
+                <span className="text-[10px] text-gray-400">+{singleOptionValues.length - visibleVariantsCount}</span>
               )}
             </div>
           ) : sortedVariants && sortedVariants.length > 0 ? (
-            // Legacy single-attribute variants: Show variant buttons
             <div className="flex gap-1.5 items-center">
               {sortedVariants.slice(0, visibleVariantsCount).map((variant) => (
                 <button
@@ -445,40 +448,32 @@ export function ProductCard({ product, is_slider = false }: ProductCardProps) {
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    setSelectedVariant(variant);
-                    // Note: quantity reset is handled by useEffect for slider mode
-                    // Grid mode uses cartQuantity which auto-updates
+                    if (variant.stock > 0) setSelectedVariant(variant);
                   }}
                   disabled={variant.stock === 0}
                   className={cn(
-                    "px-2.5 py-1 text-xs font-medium rounded-full border transition-all duration-200 whitespace-nowrap",
+                    "px-2 py-0.5 text-[11px] font-medium rounded-full border transition-all duration-200",
                     selectedVariant?.id === variant.id
-                      ? "border-primary bg-primary text-white shadow-sm"
-                      : "border-gray-200 bg-gray-50 text-gray-700 hover:border-primary/50 hover:text-gray-900",
-                    variant.stock === 0 && "opacity-40"
+                      ? "border-primary bg-primary text-white"
+                      : "border-gray-200 bg-transparent text-gray-600 hover:border-primary/50 hover:text-primary",
+                    variant.stock === 0 && "opacity-40 cursor-not-allowed decoration-slice"
                   )}
                 >
                   {variant.displayName || variant.name}
                 </button>
               ))}
               {sortedVariants.length > visibleVariantsCount && (
-                <span className="px-2 py-1 text-xs font-medium text-gray-600 bg-gray-50 rounded-full">
-                  +{sortedVariants.length - visibleVariantsCount}
-                </span>
+                <span className="text-[10px] text-gray-400">+{sortedVariants.length - visibleVariantsCount}</span>
               )}
             </div>
           ) : (
-            // No variants: Show stock status
-            <Link href={`/products/${product.slug}`} className={cn("text-xs font-medium text-muted-foreground w-full h-full")} onClick={handleCardClick}>
-              {/* {isOutOfStock ? "Hết hàng" : "Còn hàng"} */}
-              1 loại
-            </Link>
+            <span className="text-xs text-gray-400">1 loại</span>
           )}
         </div>
 
-        {/* Price */}
-        <Link href={`/products/${product.slug}`} onClick={handleCardClick} className="flex items-baseline gap-2 mt-auto">
-          <span className="text-xl font-bold text-primary">
+        {/* Price Area */}
+        <div className="flex items-baseline gap-2 mt-auto">
+          <span className="text-lg font-bold text-primary">
             {formatCurrency(displayPrice)}
           </span>
           {product.originalPrice && (
@@ -486,107 +481,69 @@ export function ProductCard({ product, is_slider = false }: ProductCardProps) {
               {formatCurrency(product.originalPrice)}
             </span>
           )}
-        </Link>
+        </div>
 
-        {/* Actions Row */}
-        <div className="flex items-center gap-2 pt-2">
+        {/* Action Buttons - Simplified & Premium */}
+        <div className="pt-2">
           {is_slider ? (
-            // === SLIDER MODE: Always show quantity input + add button ===
-            <>
-              <div className="flex items-stretch border border-gray-300 rounded-xl overflow-hidden bg-gray-50/30 h-10">
-                <button
-                  type="button"
-                  onClick={handleSliderDecrease}
-                  className="px-2 flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-40"
-                  disabled={sliderQuantity <= 1}
-                  aria-label="Giảm số lượng"
-                >
-                  <Minus className="w-3.5 h-3.5 text-gray-600" />
+            <div className="flex gap-2">
+              {/* Quantity Selector */}
+              <div className="flex items-center border border-gray-200 rounded-full h-9 w-[100px] px-1 bg-white hover:border-primary/50 transition-colors">
+                <button onClick={handleSliderDecrease} disabled={sliderQuantity <= 1} className="w-7 h-full flex items-center justify-center text-gray-500 hover:text-primary disabled:opacity-30">
+                  <Minus className="w-3 h-3" />
                 </button>
-                <span className="w-8 flex items-center justify-center text-sm font-semibold text-gray-900">
-                  {sliderQuantity}
-                </span>
-                <button
-                  type="button"
-                  onClick={handleSliderIncrease}
-                  className="px-2 flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-40"
-                  disabled={sliderQuantity >= maxStock}
-                  aria-label="Tăng số lượng"
-                >
-                  <Plus className="w-3.5 h-3.5 text-gray-600" />
+                <span className="flex-1 text-center text-sm font-semibold text-gray-900">{sliderQuantity}</span>
+                <button onClick={handleSliderIncrease} disabled={sliderQuantity >= maxStock} className="w-7 h-full flex items-center justify-center text-gray-500 hover:text-primary disabled:opacity-30">
+                  <Plus className="w-3 h-3" />
                 </button>
               </div>
 
+              {/* Add Button */}
               <button
-                type="button"
                 onClick={handleSliderAddToCart}
                 disabled={isOutOfStock}
                 className={cn(
-                  "flex-1 group relative flex h-10 items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary font-semibold text-primary-foreground shadow-md transition-all duration-200 hover:shadow-lg active:scale-95",
-                  isOutOfStock && "opacity-50 cursor-not-allowed"
+                  "flex-1 h-9 rounded-full font-medium text-sm flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 shadow-sm shadow-primary/20",
+                  isOutOfStock
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    : "bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-primary/30"
                 )}
               >
-                <span className="pointer-events-none absolute left-[-50px] flex h-[30px] w-[30px] items-center justify-center rounded-full bg-transparent transition-all duration-500 group-hover:translate-x-[60px] group-hover:rounded-[40px]">
-                  <ShoppingCart className="w-4 h-4" />
-                </span>
-                <span className="pointer-events-none flex h-full items-center justify-center text-sm transition-transform duration-500 group-hover:translate-x-[8px]">
-                  Thêm giỏ
-                </span>
+                <ShoppingCart className="w-4 h-4" />
+                <span>Thêm</span>
               </button>
-            </>
+            </div>
           ) : (
-            // === GRID MODE: Show quantity input if in cart, else show add button ===
-            <>
-              {cartQuantity > 0 ? (
-                // Item in cart - show quantity input only (full width)
-                <div className="flex items-stretch border border-gray-300 rounded-xl overflow-hidden bg-gray-50/30 flex-1 h-10">
-                  <button
-                    type="button"
-                    onClick={handleGridDecrease}
-                    className="px-2 flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-40"
-                    disabled={cartQuantity <= 0}
-                    aria-label="Giảm số lượng"
-                  >
-                    <Minus className="w-3.5 h-3.5 text-gray-600" />
-                  </button>
-                  <span className="flex-1 flex items-center justify-center text-sm font-semibold text-gray-900">
-                    {cartQuantity}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={handleGridIncrease}
-                    className="px-2 flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-40"
-                    disabled={cartQuantity >= maxStock}
-                    aria-label="Tăng số lượng"
-                  >
-                    <Plus className="w-3.5 h-3.5 text-gray-600" />
-                  </button>
-                </div>
-              ) : (
-                // Item not in cart - show add button only (full width)
-                <button
-                  type="button"
-                  onClick={handleGridAddToCart}
-                  disabled={isOutOfStock}
-                  className={cn(
-                    "flex-1 w-full group relative flex h-10 items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary font-semibold text-primary-foreground shadow-md transition-all duration-200 hover:shadow-lg active:scale-95",
-                    isOutOfStock && "opacity-50 cursor-not-allowed"
-                  )}
-                >
-                  <span className="pointer-events-none absolute left-[-50px] flex h-[30px] w-[30px] items-center justify-center rounded-full bg-transparent transition-all duration-500 group-hover:translate-x-[60px] group-active:translate-x-[300px] group-hover:rounded-[40px]">
-                    <ShoppingCart className="w-4 h-4" />
-                  </span>
-                  <span className="pointer-events-none flex h-full items-center justify-center text-sm transition-transform duration-700 group-hover:translate-x-[8px] group-active:translate-x-[170px]">
-                    Thêm giỏ
-                  </span>
+            // Grid Mode
+            cartQuantity > 0 ? (
+              <div className="flex items-center justify-between border border-primary/20 rounded-full h-10 px-1 bg-primary/5 w-full">
+                <button onClick={handleGridDecrease} className="w-10 h-full flex items-center justify-center text-primary/70 hover:text-red-600 hover:bg-red-100/50 rounded-l-full transition-colors">
+                  <Minus className="w-4 h-4" />
                 </button>
-              )}
-            </>
+                <span className="text-sm font-bold text-primary">{cartQuantity}</span>
+                <button onClick={handleGridIncrease} disabled={cartQuantity >= maxStock} className="w-10 h-full flex items-center justify-center text-primary/70 hover:text-primary hover:bg-white/50 rounded-r-full transition-colors disabled:opacity-30">
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={handleGridAddToCart}
+                disabled={isOutOfStock}
+                className={cn(
+                  "w-full h-10 rounded-full font-semibold text-sm flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 shadow-sm shadow-primary/20",
+                  isOutOfStock
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    : "bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-md hover:shadow-primary/30"
+                )}
+              >
+                <ShoppingCart className="w-4 h-4" />
+                <span>Thêm vào giỏ</span>
+              </button>
+            )
           )}
         </div>
       </div>
 
-      {/* Quick View Modal */}
       <QuickViewModal
         product={product}
         open={isQuickViewOpen}
