@@ -425,7 +425,7 @@ export class OrdersService {
           : '';
 
         return {
-          title: item.product_name,
+          title: item.product_name + ' x' + item.quantity,
           subtitle: item.variant_name || undefined,
           quantity: item.quantity,
           price: item.unit_price, // Convert from cents to currency unit
@@ -441,9 +441,9 @@ export class OrdersService {
         addressData = {
           street_1: addr.address || addr.street_1 || '',
           street_2: addr.street_2 || '',
-          city: addr.city || addr.province || '',
-          postal_code: addr.postal_code || addr.postalCode || '',
-          state: addr.state || addr.district || '',
+          city: addr.city || addr.province || 'KR',
+          postal_code: addr.postal_code || addr.postalCode || '11962',
+          state: addr.state || addr.district || 'KR',
           country: addr.country || 'KR',
         };
       }
