@@ -224,7 +224,7 @@ export function CartSummary() {
           city: "khác", // Temporarily set to empty - was: selectedShippingLocation.name
         },
         paymentMethod: "sepay",
-        shippingFee: 0, // Temporarily set to 0 - was: selectedShippingLocation.fee
+        shippingFee: summary.shipping,
         discount: 0,
         notes: note || undefined,
       });
@@ -236,7 +236,7 @@ export function CartSummary() {
         items: gaItems as any,
         value: summary.total,
         tax: 0,
-        shipping: 0, // Temporarily set to 0 - was: selectedShippingLocation.fee
+        shipping: summary.shipping,
         currency: 'KRW',
       });
 
