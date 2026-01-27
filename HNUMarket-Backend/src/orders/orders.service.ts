@@ -409,17 +409,88 @@ export class OrdersService {
   }
 
   /**
-   * Find order by order number for receipt (with full image URLs)
-   * Public endpoint - includes R2 public URL prefix for images
-   * Returns { found: boolean, data?: Order } instead of throwing exception
+   * Find order by order number for receipt (Facebook Receipt Template format)
+   * Public endpoint - returns Facebook Messenger Receipt Template structure
+   * Returns { found: boolean, message?: FacebookReceiptMessage } instead of throwing exception
    */
   async findByOrderNumberForReceipt(orderNumber: string) {
     try {
       const order = await this.findByOrderNumber(orderNumber);
-      const transformedOrder = this.transformImageUrls(order);
+
+      // Transform order items to Facebook receipt elements
+      const elements = order.items.map((item: any) => {
+        // Get first product image with full R2 URL
+        const imageUrl = item.product?.images?.[0]?.url
+          ? this.r2Storage.getPublicUrl(item.product.images[0].url)
+          : '';
+
+        return {
+          title: item.product_name,
+          subtitle: item.variant_name || undefined,
+          quantity: item.quantity,
+          price: item.unit_price, // Convert from cents to currency unit
+          currency: 'KRW',
+          image_url: imageUrl || undefined,
+        };
+      });
+
+      // Parse shipping address from JSONB
+      let addressData;
+      if (order.shipping_address) {
+        const addr = order.shipping_address as any;
+        addressData = {
+          street_1: addr.address || addr.street_1 || '',
+          street_2: addr.street_2 || '',
+          city: addr.city || addr.province || '',
+          postal_code: addr.postal_code || addr.postalCode || '',
+          state: addr.state || addr.district || '',
+          country: addr.country || 'KR',
+        };
+      }
+
+      // Build adjustments array for discounts
+      const adjustments = [];
+      if (order.discount && order.discount > 0) {
+        adjustments.push({
+          name: 'Giảm giá',
+          amount: order.discount,
+        });
+      }
+
+      // Get recipient name from user or shipping address
+      let recipientName = 'Khách hàng';
+      if (order.user?.full_name) {
+        recipientName = order.user.full_name;
+      } else if (order.shipping_address) {
+        const addr = order.shipping_address as any;
+        recipientName = addr.fullName || addr.name || addr.recipientName || 'Khách hàng';
+      }
+
+      // Build Facebook Receipt response
       return {
         found: true,
-        data: transformedOrder,
+        message: {
+          attachment: {
+            type: 'template',
+            payload: {
+              template_type: 'receipt',
+              recipient_name: recipientName,
+              order_number: order.order_number,
+              currency: 'KRW',
+              payment_method: 'Undo Tech',
+              timestamp: new Date(order.created_at).getTime().toString(),
+              address: addressData,
+              summary: {
+                subtotal: order.subtotal,
+                shipping_cost: order.shipping_fee,
+                total_tax: 0, // Vietnam orders typically don't show separate tax
+                total_cost: order.total,
+              },
+              adjustments: adjustments.length > 0 ? adjustments : undefined,
+              elements,
+            },
+          },
+        },
       };
     } catch (error) {
       // If order not found, return found: false instead of throwing
