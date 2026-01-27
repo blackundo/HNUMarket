@@ -97,6 +97,16 @@ export class OrdersController {
   }
 
   /**
+   * Get full order information by order number (with full image URLs)
+   * Public endpoint - no authentication required
+   */
+  @Get('receipt/:orderNumber')
+  @HttpCode(HttpStatus.OK)
+  async getOrderReceipt(@Param('orderNumber') orderNumber: string) {
+    return this.ordersService.findByOrderNumberForReceipt(orderNumber);
+  }
+
+  /**
    * Update order status (Admin only)
    */
   @Patch(':id/status')

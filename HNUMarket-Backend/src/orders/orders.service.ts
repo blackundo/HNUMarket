@@ -5,6 +5,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { SupabaseAdminService } from '../common/supabase/supabase-admin.service';
+import { R2StorageService } from '../common/storage/r2-storage.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 import { OrderQueryDto } from './dto/order-query.dto';
@@ -20,7 +21,10 @@ import { UpdateOrderItemDto } from './dto/update-order-item.dto';
 export class OrdersService {
   private readonly logger = new Logger(OrdersService.name);
 
-  constructor(private supabaseAdmin: SupabaseAdminService) { }
+  constructor(
+    private supabaseAdmin: SupabaseAdminService,
+    private r2Storage: R2StorageService,
+  ) { }
 
   /**
    * Generate unique order number (format: ORD-YYYYMMDD-XXXXX)
@@ -346,6 +350,29 @@ export class OrdersService {
   }
 
   /**
+   * Transform image URLs to include R2 public URL prefix
+   */
+  private transformImageUrls(order: any): any {
+    if (!order || !order.items) {
+      return order;
+    }
+
+    return {
+      ...order,
+      items: order.items.map((item: any) => ({
+        ...item,
+        product: item.product ? {
+          ...item.product,
+          images: item.product.images?.map((img: any) => ({
+            ...img,
+            url: img.url ? this.r2Storage.getPublicUrl(img.url) : img.url,
+          })),
+        } : item.product,
+      })),
+    };
+  }
+
+  /**
    * Find order by order number
    */
   async findByOrderNumber(orderNumber: string) {
@@ -379,6 +406,15 @@ export class OrdersService {
     }
 
     return data;
+  }
+
+  /**
+   * Find order by order number for receipt (with full image URLs)
+   * Public endpoint - includes R2 public URL prefix for images
+   */
+  async findByOrderNumberForReceipt(orderNumber: string) {
+    const order = await this.findByOrderNumber(orderNumber);
+    return this.transformImageUrls(order);
   }
 
   /**
@@ -810,4 +846,5 @@ export class OrdersService {
     this.logger.log(`Order cancelled: ${id}`);
     return this.findOne(id);
   }
+
 }
