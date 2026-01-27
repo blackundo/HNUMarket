@@ -411,10 +411,26 @@ export class OrdersService {
   /**
    * Find order by order number for receipt (with full image URLs)
    * Public endpoint - includes R2 public URL prefix for images
+   * Returns { found: boolean, data?: Order } instead of throwing exception
    */
   async findByOrderNumberForReceipt(orderNumber: string) {
-    const order = await this.findByOrderNumber(orderNumber);
-    return this.transformImageUrls(order);
+    try {
+      const order = await this.findByOrderNumber(orderNumber);
+      const transformedOrder = this.transformImageUrls(order);
+      return {
+        found: true,
+        data: transformedOrder,
+      };
+    } catch (error) {
+      // If order not found, return found: false instead of throwing
+      if (error instanceof NotFoundException) {
+        return {
+          found: false,
+        };
+      }
+      // Re-throw other errors
+      throw error;
+    }
   }
 
   /**
