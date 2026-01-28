@@ -11,14 +11,16 @@ import { formatCurrency } from "@/lib/utils";
  * Build order confirmation message for Messenger
  */
 export function buildOrderConfirmationMessage(orderNumber: string, totalAmount: number): string {
-  return `Xin chào! Tôi vừa đặt đơn hàng.\nMã đơn hàng: ${orderNumber}\nTổng tiền: ${formatCurrency(totalAmount)}\n\nVui lòng xác nhận đơn hàng cho tôi. Cảm ơn!`;
+  // return `Xin chào! Tôi vừa đặt đơn hàng.\nMã đơn hàng: ${orderNumber}\nTổng tiền: ${formatCurrency(totalAmount)}\n\nVui lòng xác nhận đơn hàng cho tôi. Cảm ơn!`;
+  return orderNumber;
 }
 
 /**
  * Build order support message for Messenger
  */
 export function buildOrderSupportMessage(orderNumber: string): string {
-  return `Xin chào! Tôi cần hỗ trợ đơn hàng.\nMã đơn hàng: ${orderNumber}\n\nCảm ơn!`;
+  // return `Xin chào! Tôi cần hỗ trợ đơn hàng.\nMã đơn hàng: ${orderNumber}\n\nCảm ơn!`;
+  return orderNumber;
 }
 
 /**
@@ -40,8 +42,9 @@ export function openMessengerWithMessage(
   const encodedMessage = encodeURIComponent(message);
 
   // Try to open Messenger app first (mobile), fallback to web
-  const messengerAppUrl = `fb-messenger-public://user-thread/${pageId}?intent_trigger=mme&text=${encodedMessage}`;
-  const messengerWebUrl = `https://m.me/${pageId}?text=${encodedMessage}`;
+  // const messengerAppUrl = `fb-messenger-public://user-thread/${pageId}?intent_trigger=mme&text=${encodedMessage}`;
+  const messengerAppUrl = `fb-messenger-public://user-thread/${pageId}?intent_trigger=mme&ref=${encodedMessage}`;
+  const messengerWebUrl = `https://m.me/${pageId}?ref=${encodedMessage}`;
 
   // Detect if on mobile
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -57,4 +60,5 @@ export function openMessengerWithMessage(
     window.open(messengerWebUrl, "_blank");
   }
   // window.open(messengerWebUrl, "_blank");
+  //fb-messenger-public://user-thread/711581402040312?intent_trigger=mme&ref=ORD-20260126-76317
 }
