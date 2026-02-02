@@ -36,6 +36,7 @@ export function CartSummary() {
   } = useCart();
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
+  const [phoneError, setPhoneError] = useState<string>("");
   const [locations, setLocations] = useState<ShippingLocation[]>([]);
   const [loadingLocations, setLoadingLocations] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -85,6 +86,37 @@ export function CartSummary() {
     setLoadingLocations(false);
   };
 
+  // Format phone number to 010-xxxx-xxxx
+  const formatPhoneNumber = (value: string): string => {
+    // Remove all non-digit characters
+    const digits = value.replace(/\D/g, "");
+
+    // Format as 010-xxxx-xxxx
+    if (digits.length <= 3) {
+      return digits;
+    } else if (digits.length <= 7) {
+      return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+    } else {
+      return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7, 11)}`;
+    }
+  };
+
+  // Validate Korean phone number format
+  const validatePhoneNumber = (phone: string): boolean => {
+    const phoneRegex = /^010-\d{4}-\d{4}$/;
+    return phoneRegex.test(phone);
+  };
+
+  const handlePhoneChange = (value: string) => {
+    const formatted = formatPhoneNumber(value);
+    setPhone(formatted);
+
+    // Clear error when user is typing
+    if (phoneError) {
+      setPhoneError("");
+    }
+  };
+
   const handleCheckout = async () => {
     // Prevent double-click/multiple submissions
     if (checkoutInProgressRef.current) {
@@ -105,7 +137,14 @@ export function CartSummary() {
     // }
 
     if (!phone.trim()) {
+      setPhoneError("Vui lòng nhập số điện thoại");
       toast.error("Vui lòng nhập số điện thoại");
+      return;
+    }
+
+    if (!validatePhoneNumber(phone)) {
+      setPhoneError("Số điện thoại phải theo định dạng 010-xxxx-xxxx");
+      toast.error("Số điện thoại không hợp lệ. Vui lòng nhập theo định dạng 010-xxxx-xxxx");
       return;
     }
 
@@ -333,11 +372,22 @@ export function CartSummary() {
             <input
               type="tel"
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="Số điện thoại liên hệ"
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+              onChange={(e) => handlePhoneChange(e.target.value)}
+              placeholder="010-1234-5678"
+              className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 text-sm ${
+                phoneError
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-gray-300 focus:ring-primary"
+              }`}
               required
+              maxLength={13}
             />
+            {phoneError && (
+              <p className="mt-1 text-xs text-red-500">{phoneError}</p>
+            )}
+            <p className="mt-1 text-xs text-gray-500">
+              Định dạng: 010-xxxx-xxxx
+            </p>
           </div>
 
           {/* Address Input */}
